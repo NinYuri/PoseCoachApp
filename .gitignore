@@ -1,0 +1,25 @@
+# Archivos de Proyecto de Android Studio
+*.iml
+.idea/
+.gradle/
+local.properties
+
+# Archivos de Compilación
+/build/
+**/build/
+
+# Archivos Temporales
+/captures/
+.DS_Store
+
+# Archivos de CMake / NDK
+.externalNativeBuild/
+.cxx/
+
+# Logs
+*.log
+
+# APKs y paquetes
+*.apk
+*.aab
+*.dex
