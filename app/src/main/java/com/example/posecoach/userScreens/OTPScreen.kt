@@ -1,10 +1,12 @@
 package com.example.posecoach.userScreens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,6 +19,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -41,12 +45,75 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.posecoach.R
 import com.example.posecoach.components.ContinueButton
+import com.example.posecoach.ui.theme.colorError
 import com.example.posecoach.ui.theme.colorPrin
+import com.example.posecoach.ui.theme.colorSec
 import com.example.posecoach.ui.theme.colorWhite
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun OTPScreen(navController: NavController) {
     var otpcode by remember { mutableStateOf("") }
+    var otpcodeError by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+    val context = LocalContext.current
+
+    var timeRemaining by remember { mutableStateOf(600) }
+    var timerJob by remember { mutableStateOf<Job?>(null) }     // Controlar timer
+
+    // Iniciar el timer con la pantalla
+    LaunchedEffect(Unit) {
+        timerJob = launch {
+            while (timeRemaining > 0) {
+                delay(1000L)
+                timeRemaining--
+            }
+        }
+    }
+
+    // Formatear el tiempo
+    fun formatTime(seconds: Int): String {
+        val minutes = seconds / 60
+        val remainingSeconds = seconds % 60
+        return String.format("%02d:%02d", minutes, remainingSeconds)
+    }
+
+    // Reenviar código
+    fun resendCode() {
+        // Cancelar timer anterior
+        timerJob?.cancel()
+        // Reiniciar
+        timeRemaining = 900
+        timerJob = CoroutineScope(Dispatchers.Main).launch {
+            while (timeRemaining > 0) {
+                delay(1000L)
+                timeRemaining--
+            }
+        }
+
+        // API para reenvio de OTP
+    }
+
+    // Validación
+    fun Validate(): Boolean {
+        return when {
+            otpcode.isBlank() -> {
+                otpcodeError = true
+                errorMessage = "Por favor, escribe tu código OTP para continuar."
+                false
+            }
+            else -> {
+                otpcodeError = false
+                errorMessage = ""
+                true
+            }
+        }
+    }
+
 
     Box(
         modifier = Modifier
@@ -141,6 +208,11 @@ fun OTPScreen(navController: NavController) {
             OutlinedTextField(
                 value = otpcode,
                 onValueChange = {
+                    if(otpcodeError) {
+                        otpcodeError = false
+                        errorMessage = ""
+                    }
+
                     if (it.length <= 6)
                         otpcode = it
                 },
@@ -156,7 +228,7 @@ fun OTPScreen(navController: NavController) {
                 placeholder = {
                     Text(
                         "― ― ― ― ― ―",
-                        color = colorWhite,
+                        color = if(otpcodeError) colorError else colorWhite,
                         fontSize = 25.sp,
                         fontWeight = FontWeight.Normal,
                         fontFamily = FontFamily(Font(R.font.figtree)),
@@ -166,7 +238,7 @@ fun OTPScreen(navController: NavController) {
                 },
                 textStyle = LocalTextStyle.current.merge(
                     TextStyle(
-                        color = colorWhite,
+                        color = if(otpcodeError) colorError else colorWhite,
                         fontSize = 25.sp,
                         fontWeight = FontWeight.Normal,
                         fontFamily = FontFamily(Font(R.font.figtree)),
@@ -174,8 +246,8 @@ fun OTPScreen(navController: NavController) {
                     )
                 ),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = colorWhite,
-                    unfocusedTextColor = colorWhite,
+                    focusedTextColor = if(otpcodeError) colorError else colorWhite,
+                    unfocusedTextColor = if(otpcodeError) colorError else colorWhite,
                     focusedBorderColor = Color.Transparent,
                     unfocusedBorderColor = Color.Transparent,
                     cursorColor = colorWhite,
@@ -197,21 +269,59 @@ fun OTPScreen(navController: NavController) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(end = 8.dp),
+                    .padding(start=8.dp, end = 8.dp),
                 contentAlignment = Alignment.TopEnd
             ){
-                Text(
-                    "Reenviar código en 00:38",
-                    color = colorWhite,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Light,
-                    fontFamily = FontFamily(Font(R.font.figtree)),
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    if (timeRemaining > 0) {
+                        Text(
+                            "Reenviar código en ${formatTime(timeRemaining)}",
+                            color = colorWhite,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Light,
+                            fontFamily = FontFamily(Font(R.font.figtree)),
+                            textAlign = TextAlign.Start
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    Box( contentAlignment = Alignment.CenterEnd ){
+                        Text(
+                            "Reenviar código",
+                            color = colorSec,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = FontFamily(Font(R.font.figtree)),
+                            textAlign = TextAlign.End,
+                            style = TextStyle(
+                                drawStyle = Stroke( width = 2f )
+                            )
+                        )
+
+                        Text(
+                            "Reenviar código",
+                            color = colorSec,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = FontFamily(Font(R.font.figtree)),
+                            textAlign = TextAlign.End
+                        )
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(412.dp))
             ContinueButton(
-                onClick = { navController.navigate("username") }
+                onClick = {
+                    if(Validate()) {
+                        navController.navigate("username")
+                    } else
+                        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT). show()
+                }
             )
         }
     }

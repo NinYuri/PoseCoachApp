@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.input.InputTransformation.Companion.keyboardOptions
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -56,8 +55,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.posecoach.R
 import com.example.posecoach.components.ContinueButton
+import com.example.posecoach.data.model.RegistroRequest
+import com.example.posecoach.data.viewModel.AuthViewModel
 import com.example.posecoach.ui.theme.colorDark
 import com.example.posecoach.ui.theme.colorDarker
 import com.example.posecoach.ui.theme.colorError
@@ -94,6 +96,9 @@ val countries = listOf(
 
 @Composable
 fun RegisterScreen(navController: NavController) {
+    // BACKEND
+    val authViewModel: AuthViewModel = viewModel()
+
     // Texto
     val textField = TextStyle(
         color = Color.Black,
@@ -697,9 +702,24 @@ fun RegisterScreen(navController: NavController) {
 
                     ContinueButton(
                         onClick = {
-                            if(Validar())
-                                navController.navigate("otpcode")
-                            else
+                            if(Validar()) {
+                                val datos = RegistroRequest(
+                                    email = if(selectedOption == "Email") email else "",
+                                    phone = if(selectedOption == "Teléfono") "${selectedCountry.code}$phone" else "",
+                                    password = password,
+                                    confirm_password = passwordConfirm
+                                )
+
+                                authViewModel.registrarUsuario(
+                                    datos,
+                                    onSuccess = {
+                                        navController.navigate("otpcode")
+                                    },
+                                    onError = { msg ->
+                                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                                    }
+                                )
+                            } else
                                 Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                         },
                         modifier = Modifier.offset(y = (110).dp)
