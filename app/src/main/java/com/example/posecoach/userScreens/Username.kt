@@ -1,5 +1,6 @@
 package com.example.posecoach.userScreens
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,6 +18,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,12 +43,21 @@ import androidx.navigation.NavController
 import com.example.posecoach.R
 import com.example.posecoach.components.ContinueButton
 import com.example.posecoach.data.viewModel.RegistroViewModel
+import com.example.posecoach.data.viewModel.UserViewModel
 import com.example.posecoach.ui.theme.colorError
 import com.example.posecoach.ui.theme.colorPrin
 import com.example.posecoach.ui.theme.colorWhite
 
 @Composable
-fun UsernameScreen(navController: NavController, registroViewModel: RegistroViewModel) {
+fun UsernameScreen(navController: NavController, registroViewModel: RegistroViewModel, userViewModel: UserViewModel, temporalId: Int = 0) {
+    // BACKEND
+    val currentTemporalId = if(temporalId > 0) temporalId else userViewModel.temporalId.value
+    // Borrar despues - DEBUG
+    LaunchedEffect(Unit) {
+        Log.d("OTP_DEBUG", "Temporal ID:$temporalId")
+        Log.d("OTP_DEBUG", "ViewModel temporalId: ${userViewModel.temporalId.value}")
+    }
+
     val context = LocalContext.current
     var username by remember{ mutableStateOf("") }
     var usernameError by remember { mutableStateOf(false) }

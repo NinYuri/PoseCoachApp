@@ -1,8 +1,10 @@
 package com.example.posecoach.userScreens
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,9 +44,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.posecoach.R
 import com.example.posecoach.components.ContinueButton
+import com.example.posecoach.data.model.ResendOtp
+import com.example.posecoach.data.model.VerifyOTP
+import com.example.posecoach.data.viewModel.UserViewModel
 import com.example.posecoach.ui.theme.colorError
 import com.example.posecoach.ui.theme.colorPrin
 import com.example.posecoach.ui.theme.colorSec
@@ -56,7 +62,16 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun OTPScreen(navController: NavController) {
+fun OTPScreen(navController: NavController, userViewModel: UserViewModel, temporalId: Int = 0) {
+    // BACKEND
+    val loading = userViewModel.loading.value
+    val viewModelMensaje = userViewModel.mensaje.value
+    val viewModelError = userViewModel.error.value
+    val otpVerified = userViewModel.otpVerified.value
+
+    // Usar el de viewModel o el parámetro
+    val currentTemporalId = if(temporalId > 0) temporalId else userViewModel.temporalId.value
+
     var otpcode by remember { mutableStateOf("") }
     var otpcodeError by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
@@ -64,6 +79,29 @@ fun OTPScreen(navController: NavController) {
 
     var timeRemaining by remember { mutableStateOf(600) }
     var timerJob by remember { mutableStateOf<Job?>(null) }     // Controlar timer
+
+    // Cambios en los estados del ViewModel
+    LaunchedEffect(otpVerified) {
+        if(otpVerified) {
+            navController.navigate("username?temporalId=$currentTemporalId") {
+                popUpTo("otpcode") { inclusive = true }
+            }
+        }
+    }
+
+    LaunchedEffect(viewModelError) {
+        if(viewModelError.isNotEmpty()) {
+            Toast.makeText(context, viewModelError, Toast.LENGTH_SHORT).show()
+            userViewModel.clearMessages()
+        }
+    }
+
+    LaunchedEffect(viewModelMensaje) {
+        if(viewModelMensaje.isNotEmpty() && viewModelError.isEmpty()) {
+            Toast.makeText(context, viewModelMensaje, Toast.LENGTH_SHORT).show()
+            userViewModel.clearMessages()
+        }
+    }
 
     // Iniciar el timer con la pantalla
     LaunchedEffect(Unit) {
@@ -82,12 +120,27 @@ fun OTPScreen(navController: NavController) {
         return String.format("%02d:%02d", minutes, remainingSeconds)
     }
 
+    // Verificar OTP
+    fun verifyOtp() {
+        if(currentTemporalId == 0) {
+            errorMessage = "Lo siento, el ID temporal no es válido."
+            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        userViewModel.verifyOtp(
+            VerifyOTP(
+                temporal_id = currentTemporalId,
+                otp = otpcode
+            )
+        )
+    }
+
     // Reenviar código
     fun resendCode() {
-        // Cancelar timer anterior
+        // Reiniciar timer
         timerJob?.cancel()
-        // Reiniciar
-        timeRemaining = 900
+        timeRemaining = 600
         timerJob = CoroutineScope(Dispatchers.Main).launch {
             while (timeRemaining > 0) {
                 delay(1000L)
@@ -95,7 +148,12 @@ fun OTPScreen(navController: NavController) {
             }
         }
 
-        // API para reenvio de OTP
+        userViewModel.resendOtp(
+            ResendOtp(
+                email = userViewModel.userEmail.value,
+                phone = userViewModel.userPhone.value
+            )
+        )
     }
 
     // Validación
@@ -104,6 +162,11 @@ fun OTPScreen(navController: NavController) {
             otpcode.isBlank() -> {
                 otpcodeError = true
                 errorMessage = "Por favor, escribe tu código OTP para continuar."
+                false
+            }
+            otpcode.length != 6 -> {
+                otpcodeError = true
+                errorMessage = "Por favor, escribe todas las cifras de tu código correctamente."
                 false
             }
             else -> {
@@ -289,7 +352,10 @@ fun OTPScreen(navController: NavController) {
 
                     Spacer(modifier = Modifier.weight(1f))
 
-                    Box( contentAlignment = Alignment.CenterEnd ){
+                    Box(
+                        modifier = Modifier.clickable( onClick = { resendCode() } ),
+                        contentAlignment = Alignment.CenterEnd
+                    ){
                         Text(
                             "Reenviar código",
                             color = colorSec,
@@ -318,7 +384,7 @@ fun OTPScreen(navController: NavController) {
             ContinueButton(
                 onClick = {
                     if(Validate()) {
-                        navController.navigate("username")
+                        verifyOtp()
                     } else
                         Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT). show()
                 }

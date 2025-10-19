@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -28,6 +29,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,7 +62,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.posecoach.R
 import com.example.posecoach.components.ContinueButton
 import com.example.posecoach.data.model.RegistroRequest
-import com.example.posecoach.data.viewModel.AuthViewModel
+import com.example.posecoach.data.viewModel.UserViewModel
 import com.example.posecoach.ui.theme.colorDark
 import com.example.posecoach.ui.theme.colorDarker
 import com.example.posecoach.ui.theme.colorError
@@ -67,6 +70,7 @@ import com.example.posecoach.ui.theme.colorErrorText
 import com.example.posecoach.ui.theme.colorPrin
 import com.example.posecoach.ui.theme.colorSec
 import com.example.posecoach.ui.theme.colorWhite
+import kotlinx.coroutines.delay
 
 data class Country(
     val code: String,
@@ -95,9 +99,12 @@ val countries = listOf(
 )
 
 @Composable
-fun RegisterScreen(navController: NavController) {
+fun RegisterScreen(navController: NavController, userViewModel: UserViewModel) {
     // BACKEND
-    val authViewModel: AuthViewModel = viewModel()
+    val loading = userViewModel.loading.value
+    val viewModelMensaje = userViewModel.mensaje.value
+    val viewModelError = userViewModel.error.value
+    val temporalId = userViewModel.temporalId.value
 
     // Texto
     val textField = TextStyle(
@@ -127,6 +134,26 @@ fun RegisterScreen(navController: NavController) {
     var passwordConfirmError by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
     val context = LocalContext.current
+
+    // Cambios en los estados del ViewModel
+    LaunchedEffect(viewModelMensaje, viewModelError, temporalId) {
+        if(viewModelMensaje.isNotEmpty() && viewModelError.isEmpty() && temporalId > 0)
+            navController.navigate("otpcode?temporalId=${temporalId}")
+    }
+
+    LaunchedEffect(viewModelError) {
+        if(viewModelError.isNotEmpty()) {
+            Toast.makeText(context, viewModelError, Toast.LENGTH_SHORT).show()
+            userViewModel.clearMessages()
+        }
+    }
+
+    LaunchedEffect(viewModelMensaje) {
+        if(viewModelMensaje.isNotEmpty() && viewModelError.isEmpty()) {
+            Toast.makeText(context, viewModelMensaje, Toast.LENGTH_SHORT).show()
+            userViewModel.clearMessages()
+        }
+    }
 
     // Validación
     fun validEmail(email: String): Boolean {
@@ -208,6 +235,7 @@ fun RegisterScreen(navController: NavController) {
         passwordError = false
         passwordConfirmError = false
         errorMessage = ""
+        userViewModel.clearMessages()
     }
 
     fun resetFields() {
@@ -270,6 +298,15 @@ fun RegisterScreen(navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ){
+                /* ViewModel loading
+                if(loading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(50.dp),
+                        color = colorWhite
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                }*/
+
                 Box(
                     modifier = Modifier.padding(top = 50.dp),
                     contentAlignment = Alignment.Center
@@ -710,15 +747,7 @@ fun RegisterScreen(navController: NavController) {
                                     confirm_password = passwordConfirm
                                 )
 
-                                authViewModel.registrarUsuario(
-                                    datos,
-                                    onSuccess = {
-                                        navController.navigate("otpcode")
-                                    },
-                                    onError = { msg ->
-                                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-                                    }
-                                )
+                                userViewModel.registerInitial(datos)
                             } else
                                 Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                         },
