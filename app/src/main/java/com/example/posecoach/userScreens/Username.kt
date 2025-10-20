@@ -1,6 +1,5 @@
 package com.example.posecoach.userScreens
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,7 +11,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -47,16 +48,16 @@ import com.example.posecoach.data.viewModel.UserViewModel
 import com.example.posecoach.ui.theme.colorError
 import com.example.posecoach.ui.theme.colorPrin
 import com.example.posecoach.ui.theme.colorWhite
+import kotlinx.coroutines.delay
 
 @Composable
 fun UsernameScreen(navController: NavController, registroViewModel: RegistroViewModel, userViewModel: UserViewModel, temporalId: Int = 0) {
     // BACKEND
     val currentTemporalId = if(temporalId > 0) temporalId else userViewModel.temporalId.value
-    // Borrar despues - DEBUG
-    LaunchedEffect(Unit) {
-        Log.d("OTP_DEBUG", "Temporal ID:$temporalId")
-        Log.d("OTP_DEBUG", "ViewModel temporalId: ${userViewModel.temporalId.value}")
-    }
+    val checkUsername = userViewModel.checkUsername.value
+    val usernameAvailable = userViewModel.usernameAvailable.value
+    val usernameMessage = userViewModel.usernameMessage.value
+    var lastVerifiedUsername by remember { mutableStateOf("") }
 
     val context = LocalContext.current
     var username by remember{ mutableStateOf("") }
@@ -73,7 +74,7 @@ fun UsernameScreen(navController: NavController, registroViewModel: RegistroView
             }
             username.trim().length < 5 -> {
                 usernameError = true
-                errorMessage = "Tu nombre de usuario debe tener al menos 2 caracteres."
+                errorMessage = "Tu nombre de usuario debe tener al menos 5 caracteres."
                 false
             }
             username.trim().length > 20 -> {
@@ -86,11 +87,45 @@ fun UsernameScreen(navController: NavController, registroViewModel: RegistroView
                 errorMessage = "Tu nombre de usuario sólo puede contener letras y números."
                 false
             }
+            checkUsername -> {
+                errorMessage = "Verificando nombre de usuario..."
+                false
+            }
+            username.trim() != lastVerifiedUsername -> {
+                errorMessage = "Por favor, espere a que termine la verificación de disponibilidad."
+                false
+            }
+            !usernameAvailable -> {
+                usernameError = true
+                errorMessage = usernameMessage.ifEmpty { "El nombre de usuario no está disponible" }
+                false
+            }
             else -> {
                 usernameError = false
                 errorMessage = ""
                 true
             }
+        }
+    }
+
+    // Cambios en los estados del ViewModel
+    LaunchedEffect(username) {
+        val trimmedUsername = username.trim()
+
+        if(trimmedUsername.length >= 5) {
+            delay(600)
+            userViewModel.checkUsername(trimmedUsername)
+            lastVerifiedUsername = trimmedUsername
+        } else {
+            userViewModel.clearUsername()
+            lastVerifiedUsername = ""
+        }
+    }
+
+    LaunchedEffect(usernameMessage) {
+        if(usernameMessage.isNotEmpty() && !usernameAvailable) {
+            errorMessage = usernameMessage
+            usernameError = true
         }
     }
 
@@ -203,7 +238,15 @@ fun UsernameScreen(navController: NavController, registroViewModel: RegistroView
                 shape = RoundedCornerShape(10.dp),
                 singleLine = true,
                 maxLines = 1,
-                trailingIcon = null,
+                trailingIcon = {
+                    if(checkUsername) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            color = colorWhite,
+                            strokeWidth = 2.dp
+                        )
+                    }
+                },
                 leadingIcon = null
             )
 
@@ -211,6 +254,7 @@ fun UsernameScreen(navController: NavController, registroViewModel: RegistroView
             ContinueButton(
                 onClick = {
                     if (validarUsername()) {
+                        registroViewModel.usuario.value = registroViewModel.usuario.value.copy(temporal_id = currentTemporalId)
                         registroViewModel.usuario.value = registroViewModel.usuario.value.copy(username = username.trim())
                         navController.navigate("gender")
                     } else

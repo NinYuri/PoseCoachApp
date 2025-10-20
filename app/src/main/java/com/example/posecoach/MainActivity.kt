@@ -9,6 +9,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.posecoach.data.viewModel.LoginViewModel
 import com.example.posecoach.data.viewModel.RegistroViewModel
 import com.example.posecoach.data.viewModel.UserViewModel
 import com.example.posecoach.userScreens.BirthdayScreen
@@ -37,12 +38,14 @@ fun MyApp() {
     val navController = rememberNavController()
     val registroViewModel: RegistroViewModel = viewModel()
     val userViewModel: UserViewModel = viewModel()
+    val loginViewModel: LoginViewModel = viewModel()
 
     NavHost(
         navController = navController,
         startDestination = "welcome"
     ){
-        composable("welcome") { WelcomeScreen(navController) }
+        composable("welcome") { WelcomeScreen(navController, loginViewModel) }
+
         composable("register") { RegisterScreen(navController, userViewModel) }
         composable ("otpcode")  {
             val temporalId = it.arguments?.getString("temporalId")?.toIntOrNull() ?: 0
@@ -57,7 +60,7 @@ fun MyApp() {
         composable ("height") { HeightScreen(navController, registroViewModel) }
         composable ("goal") { GoalScreen(navController, registroViewModel) }
         composable ("experience") { ExperienceScreen(navController, registroViewModel) }
-        composable ("equipment") { EquipmentScreen(navController, registroViewModel) }
+        composable ("equipment") { EquipmentScreen(navController, registroViewModel, userViewModel) }
 
         composable ("home") { HomeScreen(navController) }
     }

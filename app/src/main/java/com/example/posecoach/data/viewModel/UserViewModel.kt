@@ -1,9 +1,9 @@
 package com.example.posecoach.data.viewModel
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.posecoach.data.model.CheckUsername
 import com.example.posecoach.data.model.RegistroRequest
 import com.example.posecoach.data.model.RegistroUsuario
 import com.example.posecoach.data.model.ResendOtp
@@ -12,6 +12,7 @@ import com.example.posecoach.data.responses.CompleteResponse
 import com.example.posecoach.data.responses.OtpResponse
 import com.example.posecoach.data.responses.RegisterResponse
 import com.example.posecoach.data.responses.ResendOtpResponse
+import com.example.posecoach.data.responses.UsernameResponse
 import com.example.posecoach.network.ApiClient
 import kotlinx.coroutines.launch
 import retrofit2.Response
@@ -22,10 +23,13 @@ class UserViewModel: ViewModel() {
     var mensaje = mutableStateOf("")
     var error = mutableStateOf("")
 
-    // Temporal ID - datos guardados
+    //  Datos guardados
     var temporalId = mutableStateOf(0)
     var userEmail = mutableStateOf("")
     var userPhone = mutableStateOf("")
+    var usernameAvailable = mutableStateOf(false)
+    var checkUsername = mutableStateOf(false)
+    var usernameMessage = mutableStateOf("")
 
     // Estados específicos para cada operación
     var registerSuccess = mutableStateOf(false)
@@ -54,7 +58,7 @@ class UserViewModel: ViewModel() {
                     userPhone.value = registerData.phone
                 } else {
                     val errorBody = response.errorBody()?.string()
-                    error.value = parseError(errorBody) ?: "Error desconocido"
+                    error.value = Errores(errorBody) ?: "Error desconocido"
                     registerSuccess.value = false
                 }
             } catch(e: Exception) {
@@ -85,7 +89,7 @@ class UserViewModel: ViewModel() {
                     }
                 } else {
                     val errorBody = response.errorBody()?.string()
-                    error.value = parseError(errorBody) ?: "Error al verificar OTP"
+                    error.value = Errores(errorBody) ?: "Error al verificar OTP"
                     otpVerified.value = false
                 }
             } catch(e: Exception) {
@@ -114,12 +118,41 @@ class UserViewModel: ViewModel() {
                     }
                 } else {
                     val errorBody = response.errorBody()?.string()
-                    error.value = parseError(errorBody) ?: "Error al reenviar código OTP"
+                    error.value = Errores(errorBody) ?: "Error al reenviar código OTP"
                 }
             } catch(e: Exception) {
                 error.value = e.message ?: "Error de conexión"
             }
             loading.value = false
+        }
+    }
+
+    // Revisar nombre de usuario
+    fun checkUsername(username: String) {
+        checkUsername.value = true
+        usernameMessage.value = ""
+        usernameAvailable.value = false
+
+        viewModelScope.launch {
+            try {
+                val response: Response<UsernameResponse> = api.verifyUsername(
+                    CheckUsername(username = username)
+                )
+
+                if(response.isSuccessful) {
+                    val body = response.body()
+                    usernameAvailable.value = body?.available?.toBoolean() ?: false
+                    usernameMessage.value = body?.mensaje ?: ""
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    usernameMessage.value = Errores(errorBody) ?: "Error al verificar nombre de usuario."
+                    usernameAvailable.value = false
+                }
+            } catch (e: Exception) {
+                usernameMessage.value = e.message ?: "Error de conexión"
+                usernameAvailable.value = false
+            }
+            checkUsername.value = false
         }
     }
 
@@ -138,7 +171,7 @@ class UserViewModel: ViewModel() {
                     profileCompleted.value = true
                 } else {
                     val errorBody = response.errorBody()?.string()
-                    error.value = parseError(errorBody) ?: "Error al completar el perfil"
+                    error.value = Errores(errorBody) ?: "Error al completar el perfil"
                     profileCompleted.value = false
                 }
             } catch(e: Exception) {
@@ -150,11 +183,60 @@ class UserViewModel: ViewModel() {
     }
 
     // Función para parsear errores de la API
-    private fun parseError(errorBody: String?): String? {
+    private fun Errores(errorBody: String?): String? {
         return try {
-            errorBody
+            if(errorBody.isNullOrEmpty()) return "Lo siento, ocurrió un error desconocido."
+
+            // 1. Buscar patrones para email y phone (register)
+            val emailPattern = """\"email\":\s*\[\"([^\"]+)\"\]""".toRegex()
+            val phonePattern = """\"phone\":\s*\[\"([^\"]+)\"\]""".toRegex()
+
+            val emailMatch = emailPattern.find(errorBody)
+            if(emailMatch != null)
+                return emailMatch.groupValues[1]
+
+            val phoneMatch = phonePattern.find(errorBody)
+            if(phoneMatch != null)
+                return phoneMatch.groupValues[1]
+
+            // 2. Buscar error simple ({"error": "mensaje"})
+            val errorSimple = """\"error\":\s*\"([^\"]+)\"""".toRegex()
+            val errorSimpleMatch = errorSimple.find(errorBody)
+
+            if(errorSimpleMatch != null)
+                return errorSimpleMatch.groupValues[1]
+
+            // 3. Buscar error en formato de OTP expirado
+            val otpError = """\"error\":\s*\"([^\"]+)\"(?:,\s*\"sugerencia\":\s*\"([^\"]+)\")?""".toRegex()
+            val otpErrorMatch = otpError.find(errorBody)
+
+            if(otpErrorMatch != null) {
+                val errorMessage = otpErrorMatch.groupValues[1]
+                return errorMessage
+            }
+
+            // 4. Si no encuentra ninguno, devolver errorBody limpio
+            return limpiarJson(errorBody)
         } catch(e: Exception) {
-            "Error al procesar la respuesta"
+            errorBody ?: "Lo siento, ocurrió un error desconocido."
+        }
+    }
+
+    private fun limpiarJson(jsonString: String): String {
+        return try {
+            var cleaned = jsonString
+                .replace("{", "")
+                .replace("}", "")
+                .replace("\"", "")
+                .replace(Regex("\\s+"), " ")
+                .trim()
+
+            if(cleaned.isEmpty() || cleaned == "error:")
+                "Error en el servidor. Por favor, intenta nuevamente."
+            else
+                cleaned.replaceFirstChar { it.uppercase() }
+        } catch(e: Exception) {
+            "Error en el servidor. Por favor, intenta nuevamente."
         }
     }
 
@@ -162,6 +244,12 @@ class UserViewModel: ViewModel() {
     fun clearMessages() {
         mensaje.value = ""
         error.value = ""
+    }
+
+    fun clearUsername() {
+        usernameAvailable.value = false
+        usernameMessage.value = ""
+        checkUsername.value = false
     }
 
     fun clearAllStates() {

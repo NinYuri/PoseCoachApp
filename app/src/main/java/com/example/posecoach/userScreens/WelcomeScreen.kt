@@ -31,6 +31,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -65,6 +66,8 @@ import androidx.compose.ui.unit.times
 import androidx.navigation.NavController
 import com.example.posecoach.R
 import com.example.posecoach.components.ContinueButton
+import com.example.posecoach.data.model.LoginRequest
+import com.example.posecoach.data.viewModel.LoginViewModel
 import com.example.posecoach.ui.theme.colorDark
 import com.example.posecoach.ui.theme.colorError
 import com.example.posecoach.ui.theme.colorErrorText
@@ -72,7 +75,13 @@ import com.example.posecoach.ui.theme.colorSec
 import com.example.posecoach.ui.theme.colorWhite
 
 @Composable
-fun WelcomeScreen(navController: NavController) {
+fun WelcomeScreen(navController: NavController, loginViewModel: LoginViewModel) {
+    // BACKEND
+    val loading = loginViewModel.loading.value
+    val viewModelMensaje = loginViewModel.mensaje.value
+    val viewModelError = loginViewModel.error.value
+    val isLoggedIn = loginViewModel.isLoggedIn.value
+
     // Texto
     val textFieldText = TextStyle(
         color = Color.Black,
@@ -112,6 +121,31 @@ fun WelcomeScreen(navController: NavController) {
     var errorMessage by remember { mutableStateOf("") }
     val context = LocalContext.current
 
+    // Observar si el login fue exitoso
+    LaunchedEffect(isLoggedIn) {
+        if(isLoggedIn) {
+            navController.navigate("home") {
+                popUpTo("welcome") { inclusive = true }
+            }
+        }
+    }
+
+    // Errores
+    LaunchedEffect(viewModelError) {
+        if(viewModelError.isNotEmpty()) {
+            Toast.makeText(context, viewModelError, Toast.LENGTH_SHORT).show()
+            loginViewModel.clearMessages()
+        }
+    }
+
+    // Mensajes exitosos
+    LaunchedEffect(viewModelMensaje) {
+        if(viewModelMensaje.isNotEmpty() && viewModelError.isEmpty()) {
+            Toast.makeText(context, viewModelMensaje, Toast.LENGTH_SHORT).show()
+            loginViewModel.clearMessages()
+        }
+    }
+
     fun Validate(): Boolean {
         return when {
             username.isBlank() -> {
@@ -137,6 +171,19 @@ fun WelcomeScreen(navController: NavController) {
         usernameError = false
         passwordError = false
         errorMessage = ""
+    }
+
+    // Realizar Login
+    fun performLogin() {
+        if(Validate()) {
+            loginViewModel.Login(
+                LoginRequest(
+                    identificador = username.trim(),
+                    password = password
+                )
+            )
+        } else
+            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
     }
 
 
@@ -401,12 +448,7 @@ fun WelcomeScreen(navController: NavController) {
                             )
 
                             ContinueButton(
-                                onClick = {
-                                    if(Validate())
-                                        Log.d("Sesion", "Se pudo")
-                                    else
-                                        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
-                                },
+                                onClick = { performLogin() },
                                 modifier = Modifier.offset(y = (165).dp),
                                 text = "INICIAR SESIÓN"
                             )

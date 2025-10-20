@@ -3,6 +3,7 @@ package com.example.posecoach.userScreens
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -215,7 +217,25 @@ fun BirthdayScreen(navController: NavController, registroViewModel: RegistroView
                 .padding(20.dp, 0.dp),
             verticalArrangement = Arrangement.Top
         ){
-            Box(modifier = Modifier.padding(top = 117.dp)) {
+            Box(
+                modifier = Modifier
+                    .padding(top = 68.dp)
+                    .fillMaxWidth()
+                    .height(30.dp)
+                    .offset(x = (-10).dp),
+                contentAlignment = Alignment.CenterStart
+            ){
+                Image(
+                    painter = painterResource(id = R.drawable.arrow_back),
+                    contentDescription = "Back",
+                    modifier = Modifier
+                        .size(28.dp)
+                        .clickable { navController.navigate("gender") },
+                    contentScale = ContentScale.Fit
+                )
+            }
+
+            Box(modifier = Modifier.padding(top = 17.dp)) {
                 Text(
                     "TU CUMPLEAÑOS",
                     color = colorWhite,

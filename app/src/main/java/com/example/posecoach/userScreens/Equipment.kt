@@ -4,6 +4,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,8 +14,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,11 +45,18 @@ import com.example.posecoach.R
 import com.example.posecoach.components.ContinueButton
 import com.example.posecoach.components.OptionSelectorDer
 import com.example.posecoach.data.viewModel.RegistroViewModel
+import com.example.posecoach.data.viewModel.UserViewModel
 import com.example.posecoach.ui.theme.colorSec
 import com.example.posecoach.ui.theme.colorWhite
 
 @Composable
-fun EquipmentScreen(navController: NavController, registroViewModel: RegistroViewModel) {
+fun EquipmentScreen(navController: NavController, registroViewModel: RegistroViewModel, userViewModel: UserViewModel) {
+    // BACKEND
+    val loading = userViewModel.loading.value
+    val viewModelMensaje = userViewModel.mensaje.value
+    val viewModelError = userViewModel.error.value
+    val profileCompleted = userViewModel.profileCompleted.value
+
     val context = LocalContext.current
     var manc by remember { mutableStateOf(false) }
     var cuerpo by remember { mutableStateOf(false) }
@@ -63,6 +73,29 @@ fun EquipmentScreen(navController: NavController, registroViewModel: RegistroVie
             equipment = option
         )
     }
+
+    LaunchedEffect(profileCompleted) {
+        if(profileCompleted) {
+            navController.navigate("home") {
+                popUpTo("equipment") { inclusive = true }
+            }
+        }
+    }
+
+    LaunchedEffect(viewModelError) {
+        if(viewModelError.isNotEmpty()) {
+            Toast.makeText(context, viewModelError, Toast.LENGTH_SHORT).show()
+            userViewModel.clearMessages()
+        }
+    }
+
+    LaunchedEffect(viewModelMensaje) {
+        if(viewModelMensaje.isNotEmpty() && viewModelError.isEmpty()) {
+            Toast.makeText(context, viewModelMensaje, Toast.LENGTH_SHORT).show()
+            userViewModel.clearMessages()
+        }
+    }
+
 
     Box(
         modifier = Modifier
@@ -93,8 +126,26 @@ fun EquipmentScreen(navController: NavController, registroViewModel: RegistroVie
         ){
             Box(
                 modifier = Modifier
+                    .padding(top = 68.dp)
                     .fillMaxWidth()
-                    .padding(top = 117.dp, end = 10.dp)
+                    .height(30.dp)
+                    .offset(x = (-10).dp),
+                contentAlignment = Alignment.CenterStart
+            ){
+                Image(
+                    painter = painterResource(id = R.drawable.arrow_back),
+                    contentDescription = "Back",
+                    modifier = Modifier
+                        .size(28.dp)
+                        .clickable { navController.navigate("experience") },
+                    contentScale = ContentScale.Fit
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 17.dp, end = 10.dp)
             ){
                 Text(
                     "TU EQUIPO",
@@ -251,9 +302,10 @@ fun EquipmentScreen(navController: NavController, registroViewModel: RegistroVie
                     if(!manc && !cuerpo && !bandas && !gym)
                         Toast.makeText(context, "Por favor, selecciona tu equipo para poder continuar.", Toast.LENGTH_SHORT).show()
                     else {
-                        Log.d("Registro", "Datos del usuario: ${registroViewModel.usuario.value}")
-                        navController.navigate("home")
-                    } },
+                        val usuario = registroViewModel.usuario.value
+                        userViewModel.completeProfile(usuario)
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth(0.885f)
                     .padding(end = 10.dp)
