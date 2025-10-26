@@ -3,7 +3,6 @@ package com.example.posecoach.userScreens
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,15 +16,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,7 +31,6 @@ import androidx.navigation.NavController
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeJoin
@@ -58,41 +50,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.posecoach.R
 import com.example.posecoach.components.ContinueButton
+import com.example.posecoach.components.Country
+import com.example.posecoach.components.GenericTextField
+import com.example.posecoach.components.PhoneField
 import com.example.posecoach.data.model.RegistroRequest
 import com.example.posecoach.data.viewModel.UserViewModel
 import com.example.posecoach.ui.theme.colorDark
 import com.example.posecoach.ui.theme.colorDarker
 import com.example.posecoach.ui.theme.colorError
-import com.example.posecoach.ui.theme.colorErrorText
 import com.example.posecoach.ui.theme.colorPrin
 import com.example.posecoach.ui.theme.colorSec
 import com.example.posecoach.ui.theme.colorWhite
-
-data class Country(
-    val code: String,
-    val isoCode: String,
-    val name: String
-)
-
-// Función para obtener bandera
-fun getFlag(isoCode: String): String {
-    val flagOffset = 0x1F1E6
-    val asciiOffset = 0x41
-    val firstChar = isoCode[0].code - asciiOffset + flagOffset
-    val secondChar = isoCode[1].code - asciiOffset + flagOffset
-    return String(Character.toChars(firstChar)) + String(Character.toChars(secondChar))
-}
-
-// Lista de países
-val countries = listOf(
-    Country("+52", "MX", "México"),
-    Country("+1", "US", "Estados Unidos"),
-    Country("+57", "CO", "Colombia"),
-    Country("+34", "ES", "España"),
-    Country("+51", "PE", "Perú"),
-    Country("+56", "CL", "Chile"),
-    Country("+54", "AR", "Argentina")
-)
 
 @Composable
 fun RegisterScreen(navController: NavController, userViewModel: UserViewModel) {
@@ -101,14 +69,6 @@ fun RegisterScreen(navController: NavController, userViewModel: UserViewModel) {
     val viewModelMensaje = userViewModel.mensaje.value
     val viewModelError = userViewModel.error.value
     val temporalId = userViewModel.temporalId.value
-
-    // Texto
-    val textField = TextStyle(
-        color = Color.Black,
-        fontSize = 16.sp,
-        fontWeight = FontWeight.Normal,
-        fontFamily = FontFamily(Font(R.font.figtree))
-    )
 
     // REGISTRO - Opciones
     var selectedOption by remember { mutableStateOf("Email") }
@@ -139,6 +99,10 @@ fun RegisterScreen(navController: NavController, userViewModel: UserViewModel) {
 
     LaunchedEffect(viewModelError) {
         if(viewModelError.isNotEmpty()) {
+            if(selectedOption == "Email")
+                emailError = true
+            else
+                phoneError = true
             Toast.makeText(context, viewModelError, Toast.LENGTH_SHORT).show()
             userViewModel.clearMessages()
         }
@@ -186,6 +150,11 @@ fun RegisterScreen(navController: NavController, userViewModel: UserViewModel) {
                 false
             }
             selectedOption == "Teléfono" && !validPhone(phone) -> {
+                phoneError = true
+                errorMessage = "Por favor, ingresa un número telefónico válido."
+                false
+            }
+            selectedOption == "Teléfono" && phone.length > 10 -> {
                 phoneError = true
                 errorMessage = "Por favor, ingresa un número telefónico válido."
                 false
@@ -443,174 +412,56 @@ fun RegisterScreen(navController: NavController, userViewModel: UserViewModel) {
                 }
 
                 Spacer(modifier = Modifier.height(40.dp))
-                OutlinedTextField(
-                    value = if (selectedOption == "Email") email else phone,
-                    onValueChange = { text ->
-                        clearErrors()
-                        if (selectedOption == "Email")
+                if(selectedOption == "Email") {
+                    GenericTextField(
+                        value = email,
+                        onValueChange = { text ->
+                            clearErrors()
                             email = text
-                        else
-                            phone = text
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(
-                            width = 3.dp,
-                            color = if(emailError || phoneError) colorError else Color.Transparent,
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                        .shadow(
-                            elevation = 6.dp,
-                            shape = RoundedCornerShape(10.dp),
-                            clip = false,
-                            ambientColor = Color.Black.copy(alpha = 0.7f),
-                            spotColor = Color.Black.copy(alpha = 0.7f)
-                        ),
-                    placeholder = {
-                        Text(
-                            if (selectedOption == "Email")
-                                "Correo Electrónico"
-                            else
-                                "Número Telefónico",
-                            style = textField.copy(
-                                color = if(emailError || phoneError) colorErrorText else Color.Black
-                            )
-                        )
-                    },
-                    textStyle = textField.copy(
-                        color = if(emailError || phoneError) colorErrorText else Color.Black
-                    ),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = if(emailError || phoneError) colorErrorText else Color.Black,
-                        unfocusedTextColor = if(emailError || phoneError) colorErrorText else Color.Black,
-                        focusedBorderColor = Color.Transparent,
-                        unfocusedBorderColor = Color.Transparent,
-                        cursorColor = Color.Black,
-                        focusedContainerColor = colorWhite,
-                        unfocusedContainerColor = colorWhite
-                    ),
-                    shape = RoundedCornerShape(10.dp),
-                    singleLine = true,
-                    maxLines = 1,
-                    keyboardOptions = if(selectedOption == "Teléfono") {
-                         KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Done
-                         )
-                    } else {
-                        KeyboardOptions(
-                            keyboardType = KeyboardType.Email,
-                            imeAction = ImeAction.Next
-                        )
-                    },
-                    leadingIcon = {
-                        if(selectedOption == "Email") {
+                        },
+                        placeholder = "Correo Electrónico",
+                        isError = emailError,
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Next,
+                        leadingIcon = {
                             Icon(
                                 painter = painterResource(id = R.drawable.mail_wine),
                                 contentDescription = "Mail Icon",
                                 modifier = Modifier.size(22.dp),
-                                tint = if(emailError || phoneError) colorError else colorDark
+                                tint = if(emailError) colorError else colorDark
                             )
-                        } else {
-                            Row(
-                                modifier = Modifier
-                                    .padding(start = 11.dp, end = 5.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ){
-                                Icon(
-                                    painter = painterResource(id = R.drawable.phone_wine),
-                                    contentDescription = "Phone Icon",
-                                    modifier = Modifier.size(25.dp),
-                                    tint = if(emailError || phoneError) colorError else colorDark
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-
-                                // Selector de País
-                                Box{
-                                    Text(
-                                        text = getFlag(selectedCountry.isoCode) + " " + selectedCountry.code,
-                                        modifier = Modifier
-                                            .clickable { expanded = true },
-                                        color = Color.Black,
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 16.sp
-                                    )
-
-                                    DropdownMenu(
-                                        expanded = expanded,
-                                        onDismissRequest = { expanded = false }
-                                    ) {
-                                        countries.forEach { country ->
-                                            DropdownMenuItem(
-                                                text = {
-                                                    Text(
-                                                        "${getFlag(country.isoCode)} ${country.code}",
-                                                        color = Color.Black,
-                                                        fontSize = 16.sp
-                                                    )
-                                                },
-                                                onClick = {
-                                                    selectedCountry = country
-                                                    expanded = false
-                                                }
-                                            )
-                                        }
-                                    }
-                                }
-                            }
                         }
-                    }
-                )
+                    )
+                } else {
+                    PhoneField(
+                        phone = phone,
+                        onPhoneChange = {
+                            clearErrors()
+                            phone = it
+                        },
+                        selectedCountry = selectedCountry,
+                        onCountryChange = { selectedCountry = it },
+                        expanded = expanded,
+                        onExpandedChange = { expanded = it },
+                        phoneError = phoneError
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(15.dp))
-                OutlinedTextField(
+                GenericTextField(
                     value = password,
                     onValueChange = {
                         clearErrors()
                         password = it
                     },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(
-                            width = 3.dp,
-                            color = if(passwordError) colorError else Color.Transparent,
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                        .shadow(
-                            elevation = 6.dp,
-                            shape = RoundedCornerShape(10.dp),
-                            clip = false,
-                            ambientColor = Color.Black.copy(alpha = 0.7f),
-                            spotColor = Color.Black.copy(alpha = 0.7f)
-                        ),
-                    placeholder = {
-                        Text(
-                            "Contraseña",
-                            style = textField.copy(
-                                color = if(passwordError) colorErrorText else Color.Black
-                            )
-                        )
-                    },
-                    textStyle = textField.copy(
-                        color = if(passwordError) colorErrorText else Color.Black
-                    ),
+                    placeholder = "Contraseña",
+                    isError = passwordError,
+                    keyboardType = KeyboardType.Password,
                     visualTransformation =
                         if(passVisible)
                             VisualTransformation.None
                         else
                             PasswordVisualTransformation(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = if(passwordError) colorErrorText else Color.Black,
-                        unfocusedTextColor = if(passwordError) colorErrorText else Color.Black,
-                        focusedBorderColor = Color.Transparent,
-                        unfocusedBorderColor = Color.Transparent,
-                        cursorColor = Color.Black,
-                        focusedContainerColor = colorWhite,
-                        unfocusedContainerColor = colorWhite,
-                    ),
-                    shape = RoundedCornerShape(10.dp),
-                    singleLine = true,
-                    maxLines = 1,
                     leadingIcon = {
                         Icon(
                             painter = painterResource(id = R.drawable.lock_wine),
@@ -639,54 +490,20 @@ fun RegisterScreen(navController: NavController, userViewModel: UserViewModel) {
                 )
 
                 Spacer(modifier = Modifier.height(15.dp))
-                OutlinedTextField(
+                GenericTextField(
                     value = passwordConfirm,
                     onValueChange = {
                         clearErrors()
                         passwordConfirm = it
                     },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .border(
-                            width = 3.dp,
-                            color = if(passwordConfirmError) colorError else Color.Transparent,
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                        .shadow(
-                            elevation = 6.dp,
-                            shape = RoundedCornerShape(10.dp),
-                            clip = false,
-                            ambientColor = Color.Black.copy(alpha = 0.7f),
-                            spotColor = Color.Black.copy(alpha = 0.7f)
-                        ),
-                    placeholder = {
-                        Text(
-                            "Confirmar Contraseña",
-                            style = textField.copy(
-                                color = if(passwordConfirmError) colorErrorText else Color.Black
-                            )
-                        )
-                    },
-                    textStyle = textField.copy(
-                        color = if(passwordConfirmError) colorErrorText else Color.Black
-                    ),
+                    placeholder = "Confirmar Contraseña",
+                    isError = passwordConfirmError,
+                    keyboardType = KeyboardType.Password,
                     visualTransformation =
                         if(passConfVisible)
                             VisualTransformation.None
                         else
                             PasswordVisualTransformation(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = if(passwordConfirmError) colorErrorText else Color.Black,
-                        unfocusedTextColor = if(passwordConfirmError) colorErrorText else Color.Black,
-                        focusedBorderColor = Color.Transparent,
-                        unfocusedBorderColor = Color.Transparent,
-                        cursorColor = Color.Black,
-                        focusedContainerColor = colorWhite,
-                        unfocusedContainerColor = colorWhite,
-                    ),
-                    shape = RoundedCornerShape(10.dp),
-                    singleLine = true,
-                    maxLines = 1,
                     leadingIcon = {
                         Icon(
                             painter = painterResource(id = R.drawable.lock_wine),

@@ -1,4 +1,4 @@
-package com.example.posecoach.userScreens
+package com.example.posecoach.passwordScreens
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.LocalTextStyle
@@ -47,8 +49,7 @@ import androidx.navigation.NavController
 import com.example.posecoach.R
 import com.example.posecoach.components.ContinueButton
 import com.example.posecoach.data.model.ResendOtp
-import com.example.posecoach.data.model.VerifyOTP
-import com.example.posecoach.data.viewModel.UserViewModel
+import com.example.posecoach.data.viewModel.ForgotPassViewModel
 import com.example.posecoach.ui.theme.colorError
 import com.example.posecoach.ui.theme.colorPrin
 import com.example.posecoach.ui.theme.colorSec
@@ -60,15 +61,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun OTPScreen(navController: NavController, userViewModel: UserViewModel, temporalId: Int = 0) {
+fun OTPasswordScreen(navController: NavController, forgotPassViewModel: ForgotPassViewModel) {
     // BACKEND
-    val loading = userViewModel.loading.value
-    val viewModelMensaje = userViewModel.mensaje.value
-    val viewModelError = userViewModel.error.value
-    val otpVerified = userViewModel.otpVerified.value
-
-    // Usar el de viewModel o el parámetro
-    val currentTemporalId = if(temporalId > 0) temporalId else userViewModel.temporalId.value
+    val loading = forgotPassViewModel.loading.value
+    val viewModelMensaje = forgotPassViewModel.mensaje.value
+    val viewModelError = forgotPassViewModel.error.value
 
     var otpcode by remember { mutableStateOf("") }
     var otpcodeError by remember { mutableStateOf(false) }
@@ -76,33 +73,9 @@ fun OTPScreen(navController: NavController, userViewModel: UserViewModel, tempor
     val context = LocalContext.current
 
     var timeRemaining by remember { mutableStateOf(600) }
-    var timerJob by remember { mutableStateOf<Job?>(null) }     // Controlar timer
+    var timerJob by remember { mutableStateOf<Job?>(null) }
 
-    // Cambios en los estados del ViewModel
-    LaunchedEffect(otpVerified) {
-        if(otpVerified) {
-            navController.navigate("username?temporalId=$currentTemporalId") {
-                popUpTo("otpcode") { inclusive = true }
-            }
-        }
-    }
-
-    LaunchedEffect(viewModelError) {
-        if(viewModelError.isNotEmpty()) {
-            otpcodeError = true
-            Toast.makeText(context, viewModelError, Toast.LENGTH_SHORT).show()
-            userViewModel.clearMessages()
-        }
-    }
-
-    LaunchedEffect(viewModelMensaje) {
-        if(viewModelMensaje.isNotEmpty() && viewModelError.isEmpty()) {
-            Toast.makeText(context, viewModelMensaje, Toast.LENGTH_SHORT).show()
-            userViewModel.clearMessages()
-        }
-    }
-
-    // Iniciar el timer con la pantalla
+    // Iniciar timer
     LaunchedEffect(Unit) {
         timerJob = launch {
             while (timeRemaining > 0) {
@@ -112,32 +85,15 @@ fun OTPScreen(navController: NavController, userViewModel: UserViewModel, tempor
         }
     }
 
-    // Formatear el tiempo
+    // Formatear timer
     fun formatTime(seconds: Int): String {
         val minutes = seconds / 60
         val remainingSeconds = seconds % 60
         return String.format("%02d:%02d", minutes, remainingSeconds)
     }
 
-    // Verificar OTP
-    fun verifyOtp() {
-        if(currentTemporalId == 0) {
-            errorMessage = "Lo siento, el ID temporal no es válido."
-            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        userViewModel.verifyOtp(
-            VerifyOTP(
-                temporal_id = currentTemporalId,
-                otp = otpcode
-            )
-        )
-    }
-
     // Reenviar código
     fun resendCode() {
-        // Reiniciar timer
         timerJob?.cancel()
         timeRemaining = 600
         timerJob = CoroutineScope(Dispatchers.Main).launch {
@@ -147,10 +103,10 @@ fun OTPScreen(navController: NavController, userViewModel: UserViewModel, tempor
             }
         }
 
-        userViewModel.resendOtp(
+        forgotPassViewModel.resendOTP(
             ResendOtp(
-                email = userViewModel.userEmail.value,
-                phone = userViewModel.userPhone.value
+                email = forgotPassViewModel.userEmail.value,
+                phone = forgotPassViewModel.userPhone.value,
             )
         )
     }
@@ -176,20 +132,38 @@ fun OTPScreen(navController: NavController, userViewModel: UserViewModel, tempor
         }
     }
 
+    LaunchedEffect(viewModelError) {
+        if(viewModelError.isNotEmpty()) {
+            otpcodeError = true
+            Toast.makeText(context, viewModelError, Toast.LENGTH_SHORT).show()
+            forgotPassViewModel.clearMessages()
+        }
+    }
+
+    LaunchedEffect(viewModelMensaje) {
+        if(viewModelMensaje.isNotEmpty() && viewModelError.isEmpty()) {
+            Toast.makeText(context, viewModelMensaje, Toast.LENGTH_SHORT).show()
+            forgotPassViewModel.clearMessages()
+        }
+    }
+
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(Color.Black),
+        contentAlignment = Alignment.Center
     ){
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 270.dp)
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomEnd
         ){
             Image(
-                painter = painterResource(id = R.drawable.otp),
+                painter = painterResource(id = R.drawable.otp_pass),
                 contentDescription = "OTP",
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .size(570.dp)
+                    .offset(x = (50).dp, y = (20).dp),
                 contentScale = ContentScale.Fit
             )
         }
@@ -197,21 +171,24 @@ fun OTPScreen(navController: NavController, userViewModel: UserViewModel, tempor
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(32.dp, 0.dp),
+                .padding(20.dp, 0.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             Box(
-                modifier = Modifier.padding(top = 117.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 117.dp),
                 contentAlignment = Alignment.Center
             ){
-                // Stroke
                 Text(
-                    "VERIFICA",
+                    "VERIFICA TU IDENTIDAD",
                     color = colorWhite,
-                    fontSize = 50.sp,
+                    fontSize = 43.sp,
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily(Font(R.font.comfortaa)),
+                    lineHeight = 52.sp,
+                    textAlign = TextAlign.Center,
                     style = TextStyle(
                         drawStyle = Stroke(
                             width = 4f,
@@ -220,44 +197,18 @@ fun OTPScreen(navController: NavController, userViewModel: UserViewModel, tempor
                     )
                 )
 
-                // Relleno
                 Text(
-                    "VERIFICA",
+                    "VERIFICA TU IDENTIDAD",
                     color = colorWhite,
-                    fontSize = 50.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily(Font(R.font.comfortaa))
-                )
-            }
-
-            Spacer(modifier = Modifier.height(5.dp))
-            Box(contentAlignment = Alignment.Center){
-                // Stroke
-                Text(
-                    "TU IDENTIDAD",
-                    color = colorWhite,
-                    fontSize = 23.sp,
+                    fontSize = 43.sp,
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily(Font(R.font.comfortaa)),
-                    style = TextStyle(
-                        drawStyle = Stroke(
-                            width = 4f,
-                            join = StrokeJoin.Round
-                        )
-                    )
-                )
-
-                // Relleno
-                Text(
-                    "TU IDENTIDAD",
-                    color = colorWhite,
-                    fontSize = 23.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily(Font(R.font.comfortaa))
+                    lineHeight = 52.sp,
+                    textAlign = TextAlign.Center
                 )
             }
 
-            Spacer(modifier = Modifier.height(23.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             Text(
                 "Por favor, introduce el código que te envié",
                 color = colorWhite,
@@ -266,7 +217,7 @@ fun OTPScreen(navController: NavController, userViewModel: UserViewModel, tempor
                 fontFamily = FontFamily(Font(R.font.figtree))
             )
 
-            Spacer(modifier = Modifier.height(45.dp))
+            Spacer(modifier = Modifier.height(40.dp))
             OutlinedTextField(
                 value = otpcode,
                 onValueChange = {
@@ -314,7 +265,7 @@ fun OTPScreen(navController: NavController, userViewModel: UserViewModel, tempor
                     unfocusedBorderColor = Color.Transparent,
                     cursorColor = colorWhite,
                     focusedContainerColor = colorPrin.copy(alpha = 0.6f),
-                    unfocusedContainerColor = colorPrin.copy(alpha = 0.6f),
+                    unfocusedContainerColor = colorPrin.copy(alpha = 0.6f)
                 ),
                 shape = RoundedCornerShape(10.dp),
                 singleLine = true,
@@ -331,7 +282,7 @@ fun OTPScreen(navController: NavController, userViewModel: UserViewModel, tempor
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start=8.dp, end = 8.dp),
+                    .padding(start = 8.dp, end = 8.dp),
                 contentAlignment = Alignment.TopEnd
             ){
                 Row(
@@ -379,14 +330,33 @@ fun OTPScreen(navController: NavController, userViewModel: UserViewModel, tempor
                 }
             }
 
-            Spacer(modifier = Modifier.height(412.dp))
+            Spacer(modifier = Modifier.height(407.dp))
             ContinueButton(
                 onClick = {
-                    if(Validate()) {
-                        verifyOtp()
+                    if(Validate()){
+                        if(forgotPassViewModel.verifyOTP(otpcode)) {
+                            if(forgotPassViewModel.userEmail.value != "") {
+                                forgotPassViewModel.passEmail.value = forgotPassViewModel.passEmail.value.copy(
+                                    email = forgotPassViewModel.userEmail.value,
+                                    otp = otpcode
+                                )
+                            } else {
+                                forgotPassViewModel.passPhone.value = forgotPassViewModel.passPhone.value.copy(
+                                    phone = forgotPassViewModel.userPhone.value,
+                                    otp = otpcode
+                                )
+                            }
+
+                            navController.navigate("newPass")
+                        }
+                        else {
+                            otpcodeError = true
+                            Toast.makeText(context, "Lo siento, el código OTP es incorrecto.", Toast.LENGTH_SHORT).show()
+                        }
                     } else
                         Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT). show()
-                }
+                },
+                modifier = Modifier.fillMaxWidth(0.95f)
             )
         }
     }

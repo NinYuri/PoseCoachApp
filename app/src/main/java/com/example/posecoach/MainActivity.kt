@@ -9,9 +9,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.posecoach.data.viewModel.ForgotPassViewModel
 import com.example.posecoach.data.viewModel.LoginViewModel
 import com.example.posecoach.data.viewModel.RegistroViewModel
 import com.example.posecoach.data.viewModel.UserViewModel
+import com.example.posecoach.passwordScreens.Fields
+import com.example.posecoach.passwordScreens.NewPasswordScreen
+import com.example.posecoach.passwordScreens.OTPasswordScreen
 import com.example.posecoach.userScreens.BirthdayScreen
 import com.example.posecoach.userScreens.EquipmentScreen
 import com.example.posecoach.userScreens.ExperienceScreen
@@ -34,18 +38,28 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MyApp() {
+fun MyApp(){
     val navController = rememberNavController()
+
+    // VIEW MODEL
     val registroViewModel: RegistroViewModel = viewModel()
     val userViewModel: UserViewModel = viewModel()
     val loginViewModel: LoginViewModel = viewModel()
+    val forgotPassViewModel: ForgotPassViewModel = viewModel()
 
     NavHost(
         navController = navController,
         startDestination = "welcome"
     ){
+        // LOGIN
         composable("welcome") { WelcomeScreen(navController, loginViewModel) }
 
+        // CONTRASEÑA
+        composable("forgotPass") { Fields(navController, forgotPassViewModel) }
+        composable("otpPass") { OTPasswordScreen(navController, forgotPassViewModel) }
+        composable("newPass") { NewPasswordScreen(navController, forgotPassViewModel) }
+
+        // REGISTRO
         composable("register") { RegisterScreen(navController, userViewModel) }
         composable ("otpcode")  {
             val temporalId = it.arguments?.getString("temporalId")?.toIntOrNull() ?: 0
@@ -62,6 +76,7 @@ fun MyApp() {
         composable ("experience") { ExperienceScreen(navController, registroViewModel) }
         composable ("equipment") { EquipmentScreen(navController, registroViewModel, userViewModel) }
 
+        // HOME
         composable ("home") { HomeScreen(navController) }
     }
 }

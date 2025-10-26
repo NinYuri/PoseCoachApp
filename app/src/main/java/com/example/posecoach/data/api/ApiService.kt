@@ -1,16 +1,22 @@
 package com.example.posecoach.data.api
 
 import com.example.posecoach.data.model.CheckUsername
+import com.example.posecoach.data.model.ForgotPassEmailRequest
+import com.example.posecoach.data.model.ForgotPassPhoneRequest
 import com.example.posecoach.data.model.LoginRequest
 import com.example.posecoach.data.model.RegistroRequest
 import com.example.posecoach.data.model.RegistroUsuario
 import com.example.posecoach.data.model.ResendOtp
+import com.example.posecoach.data.model.ResetPassEmailRequest
+import com.example.posecoach.data.model.ResetPassPhoneRequest
 import com.example.posecoach.data.model.VerifyOTP
 import com.example.posecoach.data.responses.CompleteResponse
+import com.example.posecoach.data.responses.ForgotPassResponse
 import com.example.posecoach.data.responses.LoginResponse
 import com.example.posecoach.data.responses.OtpResponse
 import com.example.posecoach.data.responses.RegisterResponse
 import com.example.posecoach.data.responses.ResendOtpResponse
+import com.example.posecoach.data.responses.ResetPassResponse
 import com.example.posecoach.data.responses.UsernameResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -46,4 +52,29 @@ interface ApiService {
     suspend fun loginUser(
         @Body login: LoginRequest
     ): Response<LoginResponse>
+
+    @POST("users/forgot/")
+    suspend fun forgotPassEmail(
+        @Body request: ForgotPassEmailRequest
+    ): Response<ForgotPassResponse>
+
+    @POST("users/forgot/")
+    suspend fun forgotPassPhone(
+        @Body request: ForgotPassPhoneRequest
+    ): Response<ForgotPassResponse>
+
+    @POST("users/password/otp/")
+    suspend fun resendOTPass(
+        @Body request: ResendOtp
+    ): Response<ResendOtpResponse>
+
+    @POST("users/reset/")
+    suspend fun resetPassEmail(
+        @Body request: ResetPassEmailRequest
+    ): Response<ResetPassResponse>
+
+    @POST("users/reset/")
+    suspend fun resetPassPhone(
+        @Body request: ResetPassPhoneRequest
+    ): Response<ResetPassResponse>
 }

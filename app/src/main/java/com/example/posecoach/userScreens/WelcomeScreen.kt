@@ -11,7 +11,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,8 +27,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,7 +38,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeJoin
@@ -56,6 +53,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
@@ -66,11 +64,11 @@ import androidx.compose.ui.unit.times
 import androidx.navigation.NavController
 import com.example.posecoach.R
 import com.example.posecoach.components.ContinueButton
+import com.example.posecoach.components.GenericTextField
 import com.example.posecoach.data.model.LoginRequest
 import com.example.posecoach.data.viewModel.LoginViewModel
 import com.example.posecoach.ui.theme.colorDark
 import com.example.posecoach.ui.theme.colorError
-import com.example.posecoach.ui.theme.colorErrorText
 import com.example.posecoach.ui.theme.colorSec
 import com.example.posecoach.ui.theme.colorWhite
 
@@ -81,14 +79,6 @@ fun WelcomeScreen(navController: NavController, loginViewModel: LoginViewModel) 
     val viewModelMensaje = loginViewModel.mensaje.value
     val viewModelError = loginViewModel.error.value
     val isLoggedIn = loginViewModel.isLoggedIn.value
-
-    // Texto
-    val textFieldText = TextStyle(
-        color = Color.Black,
-        fontSize = 16.sp,
-        fontWeight = FontWeight.Normal,
-        fontFamily = FontFamily(Font(R.font.figtree))
-    )
 
     // LOGIN - Animación
     val minOffset = 0f
@@ -133,6 +123,8 @@ fun WelcomeScreen(navController: NavController, loginViewModel: LoginViewModel) 
     // Errores
     LaunchedEffect(viewModelError) {
         if(viewModelError.isNotEmpty()) {
+            usernameError = true
+            passwordError = true
             Toast.makeText(context, viewModelError, Toast.LENGTH_SHORT).show()
             loginViewModel.clearMessages()
         }
@@ -288,108 +280,39 @@ fun WelcomeScreen(navController: NavController, loginViewModel: LoginViewModel) 
                         )
 
                         Spacer(modifier = Modifier.height(53.dp))
-                        OutlinedTextField(
+                        GenericTextField(
                             value = username,
                             onValueChange = {
                                 clearErrors()
                                 username = it
                             },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .border(
-                                    width = 3.dp,
-                                    color = if(usernameError) colorError else Color.Transparent,
-                                    shape = RoundedCornerShape(10.dp)
-                                )
-                                .shadow(
-                                    elevation = 6.dp,
-                                    shape = RoundedCornerShape(10.dp),
-                                    clip = false,
-                                    ambientColor = Color.Black.copy(alpha = 0.7f),
-                                    spotColor = Color.Black.copy(alpha = 0.7f)
-                                ),
-                            placeholder = {
-                                Text(
-                                    "Nombre de Usuario",
-                                    style = textFieldText.copy(
-                                        color = if(usernameError) colorErrorText else Color.Black
-                                    )
-                                )
-                            },
-                            textStyle = textFieldText.copy(
-                                color = if(usernameError) colorErrorText else Color.Black
-                            ),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedTextColor = if(usernameError) colorErrorText else Color.Black,
-                                unfocusedTextColor = if(usernameError) colorErrorText else Color.Black,
-                                focusedBorderColor = Color.Transparent,
-                                unfocusedBorderColor = Color.Transparent,
-                                cursorColor = Color.Black,
-                                focusedContainerColor = colorWhite,
-                                unfocusedContainerColor = colorWhite
-                            ),
-                            shape = RoundedCornerShape(10.dp),
-                            singleLine = true,
-                            maxLines = 1,
+                            placeholder = "Nombre de Usuario",
+                            isError = usernameError,
                             leadingIcon = {
                                 Icon(
                                     painter = painterResource(id = R.drawable.user_wine),
                                     contentDescription = "User Icon",
-                                    modifier = Modifier.Companion.size(32.dp),
+                                    modifier = Modifier.size(32.dp),
                                     tint = if(usernameError) colorError else colorDark
                                 )
                             }
                         )
 
                         Spacer(modifier = Modifier.height(30.dp))
-                        OutlinedTextField(
+                        GenericTextField(
                             value = password,
                             onValueChange = {
                                 clearErrors()
                                 password = it
                             },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .border(
-                                    width = 3.dp,
-                                    color = if(passwordError) colorError else Color.Transparent,
-                                    shape = RoundedCornerShape(10.dp)
-                                )
-                                .shadow(
-                                    elevation = 6.dp,
-                                    shape = RoundedCornerShape(10.dp),
-                                    clip = false,
-                                    ambientColor = Color.Black.copy(alpha = 0.7f),
-                                    spotColor = Color.Black.copy(alpha = 0.7f)
-                                ),
-                            placeholder = {
-                                Text(
-                                    "Contraseña",
-                                    style = textFieldText.copy(
-                                        if(passwordError) colorErrorText else Color.Black
-                                    )
-                                )
-                            },
-                            textStyle = textFieldText.copy(
-                                if(passwordError) colorErrorText else Color.Black
-                            ),
+                            placeholder = "Contraseña",
+                            isError = passwordError,
+                            keyboardType = KeyboardType.Password,
                             visualTransformation =
-                                if (passwordVisible)
-                                    VisualTransformation.Companion.None   // Texto visible
+                                if(passwordVisible)
+                                    VisualTransformation.None
                                 else
-                                    PasswordVisualTransformation(),     // Texto oculto
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedTextColor = if(passwordError) colorErrorText else Color.Black,
-                                unfocusedTextColor = if(passwordError) colorErrorText else Color.Black,
-                                focusedBorderColor = Color.Transparent,
-                                unfocusedBorderColor = Color.Transparent,
-                                cursorColor = Color.Black,
-                                focusedContainerColor = colorWhite,
-                                unfocusedContainerColor = colorWhite,
-                            ),
-                            shape = RoundedCornerShape(10.dp),
-                            singleLine = true,
-                            maxLines = 1,
+                                    PasswordVisualTransformation(),
                             leadingIcon = {
                                 Icon(
                                     painter = painterResource(id = R.drawable.lock_wine),
@@ -400,11 +323,9 @@ fun WelcomeScreen(navController: NavController, loginViewModel: LoginViewModel) 
                             },
                             trailingIcon = {
                                 IconButton(
-                                    onClick = {
-                                        passwordVisible = !passwordVisible
-                                    },    // Alternar visibilidad
+                                    onClick = { passwordVisible = !passwordVisible },
                                     modifier = Modifier.size(26.dp)
-                                ) {
+                                ){
                                     Icon(
                                         painter =
                                             if (passwordVisible)
@@ -422,14 +343,18 @@ fun WelcomeScreen(navController: NavController, loginViewModel: LoginViewModel) 
                         Spacer(modifier = Modifier.height(13.dp))
                         Box(
                             modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.Companion.CenterEnd
-                        ) {
+                            contentAlignment = Alignment.CenterEnd
+                        ){
                             Text(
                                 "¿Olvidaste tu contraseña?",
                                 color = colorWhite,
                                 fontSize = 14.sp,
                                 fontFamily = FontFamily(Font(R.font.figtree)),
-                                fontWeight = FontWeight.Light
+                                fontWeight = FontWeight.Light,
+                                modifier = Modifier.clickable {
+                                    loginViewModel.clearMessages()
+                                    navController.navigate("forgotPass")
+                                }
                             )
                         }
 

@@ -319,7 +319,7 @@ fun HeightScreen(navController: NavController, registroViewModel: RegistroViewMo
                         height = selectedHeight
                     )
                     navController.navigate("goal")
-                          },
+                },
                 modifier = Modifier.fillMaxWidth(0.965f)
             )
         }

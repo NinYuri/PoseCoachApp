@@ -11,6 +11,8 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 // App Colors
+// Dark
+var darkBack = Color(0xFF000000)
 val colorWhite = Color(0xFFD9D9D9)
 val colorSec = Color(0xFF4CAF50)
 val colorPrin = Color(0xFF29812D)
@@ -18,3 +20,6 @@ val colorDark = Color(0xFF25772A)
 val colorDarker = Color(0xFF1D5E21)
 val colorError = Color(0xFF541B1E)
 val colorErrorText = Color(0xFF670A1F)
+
+// Light
+var lightBack = Color(0xFFC3BCA1)
