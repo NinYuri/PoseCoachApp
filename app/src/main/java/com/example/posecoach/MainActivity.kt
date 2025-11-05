@@ -13,6 +13,8 @@ import com.example.posecoach.data.viewModel.ForgotPassViewModel
 import com.example.posecoach.data.viewModel.LoginViewModel
 import com.example.posecoach.data.viewModel.RegistroViewModel
 import com.example.posecoach.data.viewModel.UserViewModel
+import com.example.posecoach.homeScreens.CameraScreen
+import com.example.posecoach.homeScreens.HomeScreen
 import com.example.posecoach.passwordScreens.Fields
 import com.example.posecoach.passwordScreens.NewPasswordScreen
 import com.example.posecoach.passwordScreens.OTPasswordScreen
@@ -49,7 +51,7 @@ fun MyApp(){
 
     NavHost(
         navController = navController,
-        startDestination = "welcome"
+        startDestination = "home"
     ){
         // LOGIN
         composable("welcome") { WelcomeScreen(navController, loginViewModel) }
@@ -78,6 +80,7 @@ fun MyApp(){
 
         // HOME
         composable ("home") { HomeScreen(navController) }
+        composable ("camera") { CameraScreen(navController) }
     }
 }
 
