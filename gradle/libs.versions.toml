@@ -13,6 +13,10 @@ animation = "1.9.2"
 navigationRuntimeKtx = "2.9.5"
 navigationCompose = "2.9.5"
 uiText = "1.9.3"
+ui = "1.9.4"
+poseDetectionCommon = "17.0.0"
+foundation = "1.9.4"
+core = "1.51.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -34,6 +38,10 @@ androidx-animation = { group = "androidx.compose.animation", name = "animation",
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 androidx-ui-text = { group = "androidx.compose.ui", name = "ui-text", version.ref = "uiText" }
+ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
+pose-detection-common = { group = "com.google.mlkit", name = "pose-detection-common", version.ref = "poseDetectionCommon" }
+androidx-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
+core = { group = "com.google.ar", name = "core", version.ref = "core" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

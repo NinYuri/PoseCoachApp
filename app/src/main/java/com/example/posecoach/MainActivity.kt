@@ -18,6 +18,7 @@ import com.example.posecoach.homeScreens.HomeScreen
 import com.example.posecoach.passwordScreens.Fields
 import com.example.posecoach.passwordScreens.NewPasswordScreen
 import com.example.posecoach.passwordScreens.OTPasswordScreen
+import com.example.posecoach.profileScreens.ProfileScreen
 import com.example.posecoach.userScreens.BirthdayScreen
 import com.example.posecoach.userScreens.EquipmentScreen
 import com.example.posecoach.userScreens.ExperienceScreen
@@ -81,6 +82,9 @@ fun MyApp(){
         // HOME
         composable ("home") { HomeScreen(navController) }
         composable ("camera") { CameraScreen(navController) }
+
+        // PROFILE
+        composable("profile") { ProfileScreen(navController) }
     }
 }
 
