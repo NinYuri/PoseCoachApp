@@ -4,7 +4,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.posecoach.data.model.LoginRequest
+import com.example.posecoach.data.model.LogoutRequest
 import com.example.posecoach.data.responses.LoginResponse
+import com.example.posecoach.data.token.TokenManager
 import com.example.posecoach.network.ApiClient
 import kotlinx.coroutines.launch
 import retrofit2.Response
@@ -44,6 +46,11 @@ class LoginViewModel: ViewModel() {
                         email.value = body.user?.email ?: ""
                         phone.value = body.user?.phone ?: ""
 
+                        TokenManager.updateTokens(
+                            access = body.access_token ?: "",
+                            refresh = body.refresh_token ?: "",
+                        )
+
                         mensaje.value = "Inicio de sesión exitoso."
                         isLoggedIn.value = true
                     } else {
@@ -63,6 +70,32 @@ class LoginViewModel: ViewModel() {
         }
     }
 
+    fun Logout() {
+        viewModelScope.launch {
+            try {
+                val refresh = refreshToken.value
+
+                if(refresh.isEmpty()) {
+                    error.value = "No hay token para cerrar sesión"
+                    return@launch
+                }
+
+                val response = api.logoutUser(LogoutRequest(refresh) )
+                if(response.isSuccessful) {
+                    val body = response.body()
+                    mensaje.value = body?.mensaje ?: "¡Nos vemos después!"
+
+                    logout()
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    error.value = parseError(errorBody) ?: "Error al cerrar sesión"
+                }
+            } catch (e: Exception) {
+                error.value = e.message ?: "Error de conexión"
+            }
+        }
+    }
+
     private fun parseError(errorBody: String?): String? {
         if(errorBody.isNullOrEmpty()) return null
         val regex = """"error":\s*"([^"]+)"""".toRegex()
@@ -77,6 +110,7 @@ class LoginViewModel: ViewModel() {
         email.value = ""
         phone.value = ""
         isLoggedIn.value = false
+        TokenManager.clearTokens()
     }
 
     fun clearMessages() {

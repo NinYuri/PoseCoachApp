@@ -178,7 +178,7 @@ fun RegisterScreen(navController: NavController, userViewModel: UserViewModel) {
             }
             password != passwordConfirm -> {
                 passwordConfirmError = true
-                errorMessage = "Las contraseñas no coinciden."
+                errorMessage = "Lo siento, las contraseñas no coinciden."
                 false
             }
 

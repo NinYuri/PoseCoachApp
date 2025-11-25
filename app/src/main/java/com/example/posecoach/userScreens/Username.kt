@@ -97,7 +97,7 @@ fun UsernameScreen(navController: NavController, registroViewModel: RegistroView
             }
             !usernameAvailable -> {
                 usernameError = true
-                errorMessage = usernameMessage.ifEmpty { "El nombre de usuario no está disponible" }
+                errorMessage = usernameMessage.ifEmpty { "Lo siento, el nombre de usuario no está disponible" }
                 false
             }
             else -> {

@@ -346,7 +346,7 @@ fun BirthdayScreen(navController: NavController, registroViewModel: RegistroView
                         selectedDate.third
                     )
                     navController.navigate("height")
-                          },
+                },
                 modifier = Modifier.fillMaxWidth(0.965f)
             )
         }

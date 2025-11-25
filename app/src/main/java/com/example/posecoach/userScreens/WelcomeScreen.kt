@@ -70,6 +70,7 @@ import com.example.posecoach.ui.theme.colorDark
 import com.example.posecoach.ui.theme.colorError
 import com.example.posecoach.ui.theme.colorSec
 import com.example.posecoach.ui.theme.colorWhite
+import kotlinx.coroutines.delay
 
 @Composable
 fun WelcomeScreen(navController: NavController, loginViewModel: LoginViewModel) {
@@ -113,6 +114,7 @@ fun WelcomeScreen(navController: NavController, loginViewModel: LoginViewModel) 
     // Observar si el login fue exitoso
     LaunchedEffect(isLoggedIn) {
         if(isLoggedIn) {
+            delay(300L)
             navController.navigate("home") {
                 popUpTo("welcome") { inclusive = true }
             }

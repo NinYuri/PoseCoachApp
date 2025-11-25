@@ -76,7 +76,7 @@ fun EquipmentScreen(navController: NavController, registroViewModel: RegistroVie
 
     LaunchedEffect(profileCompleted) {
         if(profileCompleted) {
-            navController.navigate("home") {
+            navController.navigate("welcome") {
                 popUpTo("equipment") { inclusive = true }
             }
         }

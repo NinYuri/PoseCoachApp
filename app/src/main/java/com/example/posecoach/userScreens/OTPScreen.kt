@@ -182,9 +182,10 @@ fun OTPScreen(navController: NavController, userViewModel: UserViewModel, tempor
             .fillMaxSize()
             .background(Color.Black)
     ){
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 270.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 270.dp)
         ){
             Image(
                 painter = painterResource(id = R.drawable.otp),
@@ -331,7 +332,7 @@ fun OTPScreen(navController: NavController, userViewModel: UserViewModel, tempor
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start=8.dp, end = 8.dp),
+                    .padding(start = 8.dp, end = 8.dp),
                 contentAlignment = Alignment.TopEnd
             ){
                 Row(
