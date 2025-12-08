@@ -40,6 +40,7 @@ import androidx.navigation.NavController
 import com.example.posecoach.R
 import com.example.posecoach.components.ContinueButton
 import com.example.posecoach.components.GenericTextField
+import com.example.posecoach.components.ScreenLoader
 import com.example.posecoach.data.model.UpdateRequest
 import com.example.posecoach.data.viewModel.ProfileViewModel
 import com.example.posecoach.data.viewModel.UserViewModel
@@ -57,12 +58,16 @@ fun UserChange(navController: NavController, profileViewModel: ProfileViewModel,
     var lastVerifiedUsername by remember { mutableStateOf("") }
 
     // BACKEND PROFILE
+    val loading = profileViewModel.loading.value
     val message = profileViewModel.updateResult.value
     val error = profileViewModel.error.value
 
     val context = LocalContext.current
     var usernameError by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
+
+    // Combinar loadings
+    val isLoading = checkUsername || loading
 
     LaunchedEffect(profileViewModel.selectedUsername.value) {
         selectedUsername = profileViewModel.selectedUsername.value
@@ -79,6 +84,13 @@ fun UserChange(navController: NavController, profileViewModel: ProfileViewModel,
         if(error.isNotEmpty()) {
             Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
             profileViewModel.error.value = ""
+        }
+    }
+
+    LaunchedEffect(usernameMessage) {
+        if(usernameMessage.isNotEmpty() && !usernameAvailable) {
+            errorMessage = usernameMessage
+            usernameError = true
         }
     }
 
@@ -104,10 +116,6 @@ fun UserChange(navController: NavController, profileViewModel: ProfileViewModel,
                 errorMessage = "Tu nuevo nombre de usuario sólo puede contener letras y números."
                 false
             }
-            checkUsername -> {
-                errorMessage = "Verificando nombre de usuario..."
-                false
-            }
             selectedUsername.trim() != lastVerifiedUsername -> {
                 errorMessage = "Por favor, espere a que termine la verificación de disponibilidad."
                 false
@@ -124,18 +132,13 @@ fun UserChange(navController: NavController, profileViewModel: ProfileViewModel,
         }
     }
 
-    LaunchedEffect(usernameMessage) {
-        if(usernameMessage.isNotEmpty() && !usernameAvailable) {
-            errorMessage = usernameMessage
-            usernameError = true
-        }
-    }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
     ){
+        ScreenLoader( isLoading = isLoading )
+
         Box(
             modifier = Modifier
                 .fillMaxSize()

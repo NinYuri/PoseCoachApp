@@ -44,6 +44,7 @@ import androidx.navigation.NavController
 import com.example.posecoach.R
 import com.example.posecoach.components.ContinueButton
 import com.example.posecoach.components.OptionSelectorDer
+import com.example.posecoach.components.ScreenLoader
 import com.example.posecoach.data.viewModel.RegistroViewModel
 import com.example.posecoach.data.viewModel.UserViewModel
 import com.example.posecoach.ui.theme.colorSec
@@ -102,6 +103,8 @@ fun EquipmentScreen(navController: NavController, registroViewModel: RegistroVie
             .fillMaxSize()
             .background(Color.Black)
     ){
+        ScreenLoader( isLoading = loading )
+
         Box(
             modifier = Modifier
                 .fillMaxSize()

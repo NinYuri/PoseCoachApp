@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.posecoach.R
 import com.example.posecoach.components.ContinueButton
+import com.example.posecoach.components.ScreenLoader
 import com.example.posecoach.data.model.UpdateRequest
 import com.example.posecoach.data.viewModel.ProfileViewModel
 import com.example.posecoach.data.viewModel.RegistroViewModel
@@ -167,6 +168,7 @@ fun PickerColumn(
 fun HeightChange(navController: NavController, profileViewModel: ProfileViewModel) {
     val selHeight = profileViewModel.selectedHeight.value
     val context = LocalContext.current
+    val loading = profileViewModel.loading.value
 
     var selectedHeight by remember { mutableStateOf(selHeight) }
 
@@ -175,6 +177,8 @@ fun HeightChange(navController: NavController, profileViewModel: ProfileViewMode
             .fillMaxSize()
             .background(Color.Black)
     ){
+        ScreenLoader( isLoading = loading )
+
         Box(
             modifier = Modifier
                 .fillMaxSize()

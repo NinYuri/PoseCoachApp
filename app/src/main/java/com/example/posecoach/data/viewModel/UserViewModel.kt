@@ -43,6 +43,7 @@ class UserViewModel: ViewModel() {
     fun registerInitial(registerData: RegistroRequest) {
         loading.value = true
         error.value = ""
+
         viewModelScope.launch {
             try {
                 val response: Response<RegisterResponse> = api.registerUser(registerData)
@@ -73,6 +74,7 @@ class UserViewModel: ViewModel() {
     fun verifyOtp(otpData: VerifyOTP) {
         loading.value = true
         error.value = ""
+
         viewModelScope.launch {
             try {
                 val response: Response<OtpResponse> = api.verifyOtp(otpData)
@@ -104,6 +106,7 @@ class UserViewModel: ViewModel() {
     fun resendOtp(resendData: ResendOtp) {
         loading.value = true
         error.value = ""
+
         viewModelScope.launch {
             try {
                 val response: Response<ResendOtpResponse> = api.resendOtp(resendData)

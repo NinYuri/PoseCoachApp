@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.posecoach.R
 import com.example.posecoach.components.ContinueButton
+import com.example.posecoach.components.ScreenLoader
 import com.example.posecoach.data.model.ResendOtp
 import com.example.posecoach.data.viewModel.ForgotPassViewModel
 import com.example.posecoach.ui.theme.colorError
@@ -154,6 +155,8 @@ fun OTPasswordScreen(navController: NavController, forgotPassViewModel: ForgotPa
             .background(Color.Black),
         contentAlignment = Alignment.Center
     ){
+        ScreenLoader( isLoading = loading )
+
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomEnd

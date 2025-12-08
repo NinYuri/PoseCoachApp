@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.posecoach.R
 import com.example.posecoach.components.ContinueButton
+import com.example.posecoach.components.ScreenLoader
 import com.example.posecoach.data.model.UpdateRequest
 import com.example.posecoach.data.viewModel.ProfileViewModel
 import com.example.posecoach.data.viewModel.RegistroViewModel
@@ -188,6 +189,7 @@ fun DatePickerColumn(
 fun ChangeBirthday(navController: NavController, profileViewModel: ProfileViewModel) {
     val selDate = profileViewModel.selectedDate.value
     val context = LocalContext.current
+    val loading = profileViewModel.loading.value
 
     val (savedYear, savedMonth, savedDay) = remember(selDate) {
         val parts = selDate.split("-")
@@ -205,6 +207,8 @@ fun ChangeBirthday(navController: NavController, profileViewModel: ProfileViewMo
             .fillMaxSize()
             .background(Color.Black)
     ){
+        ScreenLoader( isLoading = loading )
+
         Box(
             modifier = Modifier
                 .fillMaxSize()

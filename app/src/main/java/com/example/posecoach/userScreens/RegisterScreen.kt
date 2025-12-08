@@ -53,6 +53,7 @@ import com.example.posecoach.components.ContinueButton
 import com.example.posecoach.components.Country
 import com.example.posecoach.components.GenericTextField
 import com.example.posecoach.components.PhoneField
+import com.example.posecoach.components.ScreenLoader
 import com.example.posecoach.data.model.RegistroRequest
 import com.example.posecoach.data.viewModel.UserViewModel
 import com.example.posecoach.ui.theme.colorDark
@@ -216,6 +217,8 @@ fun RegisterScreen(navController: NavController, userViewModel: UserViewModel) {
             .fillMaxSize()
             .background(Color.Black)
     ){
+        ScreenLoader( isLoading = loading )
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -263,15 +266,6 @@ fun RegisterScreen(navController: NavController, userViewModel: UserViewModel) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ){
-                /* ViewModel loading
-                if(loading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(50.dp),
-                        color = colorWhite
-                    )
-                    Spacer(modifier = Modifier.height(20.dp))
-                }*/
-
                 Box(
                     modifier = Modifier.padding(top = 50.dp),
                     contentAlignment = Alignment.Center

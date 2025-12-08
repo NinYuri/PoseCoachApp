@@ -40,6 +40,7 @@ import androidx.navigation.NavController
 import com.example.posecoach.R
 import com.example.posecoach.components.ContinueButton
 import com.example.posecoach.components.OptionSelectorDer
+import com.example.posecoach.components.ScreenLoader
 import com.example.posecoach.data.model.UpdateRequest
 import com.example.posecoach.data.viewModel.ProfileViewModel
 import com.example.posecoach.ui.theme.colorPrin
@@ -49,6 +50,7 @@ import com.example.posecoach.ui.theme.colorWhite
 fun ExperienceChange(navController: NavController, profileViewModel: ProfileViewModel) {
     val selExp = profileViewModel.selectedExp.value
     val context = LocalContext.current
+    val loading = profileViewModel.loading.value
 
     var avanzado by remember { mutableStateOf(Adv(selExp)) }
     var intermedio by remember { mutableStateOf(Int(selExp)) }
@@ -71,6 +73,8 @@ fun ExperienceChange(navController: NavController, profileViewModel: ProfileView
             .fillMaxSize()
             .background(Color.Black)
     ){
+        ScreenLoader( isLoading = loading )
+
         Box(
             modifier = Modifier
                 .fillMaxSize()

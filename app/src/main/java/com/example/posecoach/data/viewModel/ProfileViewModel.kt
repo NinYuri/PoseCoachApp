@@ -88,7 +88,6 @@ class ProfileViewModel(private val repository: ProfileRepo): ViewModel() {
             } catch (e: Exception) {
                 updateResult.value = "Error de conexión ${e.message}"
             }
-
             loading.value = false
         }
     }

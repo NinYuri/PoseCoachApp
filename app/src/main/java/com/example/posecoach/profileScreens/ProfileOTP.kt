@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.posecoach.R
 import com.example.posecoach.components.ContinueButton
+import com.example.posecoach.components.ScreenLoader
 import com.example.posecoach.data.model.ResendOtp
 import com.example.posecoach.data.viewModel.EmPhViewModel
 import com.example.posecoach.ui.theme.colorError
@@ -174,6 +175,8 @@ fun ProfileOTP(navController: NavController, verificationType: VerificationType,
             .fillMaxSize()
             .background(Color.Black)
     ){
+        ScreenLoader( isLoading = loading )
+
         Box(
             modifier = Modifier
                 .fillMaxSize()

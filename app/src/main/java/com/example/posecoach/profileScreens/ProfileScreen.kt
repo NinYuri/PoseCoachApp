@@ -43,6 +43,7 @@ import com.example.posecoach.R
 import com.example.posecoach.components.Dialog
 import com.example.posecoach.components.GlowItem
 import com.example.posecoach.components.HomeMenu
+import com.example.posecoach.components.ScreenLoader
 import com.example.posecoach.data.viewModel.LoginViewModel
 import com.example.posecoach.data.viewModel.ProfileViewModel
 import com.example.posecoach.ui.theme.colorDark
@@ -62,6 +63,7 @@ fun ProfileScreen(navController: NavController, profileViewModel: ProfileViewMod
     val isLoggedIn = loginViewModel.isLoggedIn.value
 
     // BACKEND DELETE
+    val loading = profileViewModel.loading.value
     val mesDelete = profileViewModel.mensaje.value
     val errDelete = profileViewModel.error.value
     val isDelete by profileViewModel.isDelete
@@ -118,13 +120,13 @@ fun ProfileScreen(navController: NavController, profileViewModel: ProfileViewMod
         }
     }
 
-
-
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
     ){
+        ScreenLoader( isLoading = loading )
+
         Column(
             modifier = Modifier
                 .fillMaxSize()

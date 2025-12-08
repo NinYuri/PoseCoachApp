@@ -76,7 +76,7 @@ fun MyApp(){
 
     NavHost(
         navController = navController,
-        startDestination = "welcome"
+        startDestination = "home"
     ){
         // LOGIN
         composable("welcome") { WelcomeScreen(navController, loginViewModel) }
@@ -104,7 +104,7 @@ fun MyApp(){
         composable ("equipment") { EquipmentScreen(navController, registroViewModel, userViewModel) }
 
         // HOME
-        composable ("home") { HomeScreen(navController) }
+        composable ("home") { HomeScreen(navController, profileViewModel) }
         composable ("camera") { CameraScreen(navController) }
 
         // PROFILE

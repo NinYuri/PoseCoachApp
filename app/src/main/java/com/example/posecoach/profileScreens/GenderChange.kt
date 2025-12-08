@@ -40,6 +40,7 @@ import androidx.navigation.NavController
 import com.example.posecoach.R
 import com.example.posecoach.components.ContinueButton
 import com.example.posecoach.components.OptionSelector
+import com.example.posecoach.components.ScreenLoader
 import com.example.posecoach.data.model.UpdateRequest
 import com.example.posecoach.data.viewModel.ProfileViewModel
 import com.example.posecoach.ui.theme.colorPrin
@@ -49,6 +50,7 @@ import com.example.posecoach.ui.theme.colorWhite
 fun GenderChange(navController: NavController, profileViewModel: ProfileViewModel) {
     val selSex = profileViewModel.selectedSex.value
     val context = LocalContext.current
+    val loading = profileViewModel.loading.value
 
     var femSelected by remember { mutableStateOf(isFemale(selSex)) }
     var mascSelected by remember { mutableStateOf(isMale(selSex)) }
@@ -69,6 +71,8 @@ fun GenderChange(navController: NavController, profileViewModel: ProfileViewMode
             .fillMaxSize()
             .background(Color.Black)
     ){
+        ScreenLoader( isLoading = loading )
+
         Box(
             modifier = Modifier
                 .fillMaxSize()

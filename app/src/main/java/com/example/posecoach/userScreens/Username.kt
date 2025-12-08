@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.posecoach.R
 import com.example.posecoach.components.ContinueButton
+import com.example.posecoach.components.ScreenLoader
 import com.example.posecoach.data.viewModel.RegistroViewModel
 import com.example.posecoach.data.viewModel.UserViewModel
 import com.example.posecoach.ui.theme.colorError
@@ -85,10 +86,6 @@ fun UsernameScreen(navController: NavController, registroViewModel: RegistroView
             !username.matches(Regex("^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\\s]+$")) -> {
                 usernameError = true
                 errorMessage = "Tu nombre de usuario sólo puede contener letras y números."
-                false
-            }
-            checkUsername -> {
-                errorMessage = "Verificando nombre de usuario..."
                 false
             }
             username.trim() != lastVerifiedUsername -> {
@@ -134,6 +131,8 @@ fun UsernameScreen(navController: NavController, registroViewModel: RegistroView
             .fillMaxSize()
             .background(Color.Black)
     ){
+        ScreenLoader( isLoading = checkUsername )
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -238,15 +237,7 @@ fun UsernameScreen(navController: NavController, registroViewModel: RegistroView
                 shape = RoundedCornerShape(10.dp),
                 singleLine = true,
                 maxLines = 1,
-                trailingIcon = {
-                    if(checkUsername) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp),
-                            color = colorWhite,
-                            strokeWidth = 2.dp
-                        )
-                    }
-                },
+                trailingIcon = null,
                 leadingIcon = null
             )
 

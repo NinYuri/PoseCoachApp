@@ -64,6 +64,7 @@ import androidx.navigation.NavController
 import com.example.posecoach.R
 import com.example.posecoach.components.ContinueButton
 import com.example.posecoach.components.GenericTextField
+import com.example.posecoach.components.ScreenLoader
 import com.example.posecoach.data.model.LoginRequest
 import com.example.posecoach.data.viewModel.LoginViewModel
 import com.example.posecoach.ui.theme.colorDark
@@ -184,7 +185,9 @@ fun WelcomeScreen(navController: NavController, loginViewModel: LoginViewModel) 
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
-    ) {
+    ){
+        ScreenLoader( isLoading = loading )
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -587,7 +590,7 @@ fun WelcomeScreen(navController: NavController, loginViewModel: LoginViewModel) 
                             style = SpanStyle(
                                 color = colorSec
                             )
-                        ) {
+                        ){
                             append("mejor versión")
                         }
                     },

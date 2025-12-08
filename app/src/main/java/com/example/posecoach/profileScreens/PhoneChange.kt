@@ -41,6 +41,7 @@ import com.example.posecoach.R
 import com.example.posecoach.components.ContinueButton
 import com.example.posecoach.components.Country
 import com.example.posecoach.components.PhoneField
+import com.example.posecoach.components.ScreenLoader
 import com.example.posecoach.data.viewModel.EmPhViewModel
 import com.example.posecoach.data.viewModel.ProfileViewModel
 import com.example.posecoach.ui.theme.colorPrin
@@ -127,6 +128,8 @@ fun PhoneChange(navController: NavController, hasPhone: Boolean, profileViewMode
             .fillMaxSize()
             .background(Color.Black)
     ){
+        ScreenLoader( isLoading = loading )
+
         Box(
             modifier = Modifier
                 .fillMaxSize()

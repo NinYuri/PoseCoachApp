@@ -52,6 +52,7 @@ import com.example.posecoach.components.ContinueButton
 import com.example.posecoach.components.Country
 import com.example.posecoach.components.GenericTextField
 import com.example.posecoach.components.PhoneField
+import com.example.posecoach.components.ScreenLoader
 import com.example.posecoach.data.viewModel.ForgotPassViewModel
 import com.example.posecoach.ui.theme.colorDark
 import com.example.posecoach.ui.theme.colorDarker
@@ -171,6 +172,8 @@ fun Fields(navController: NavController, forgotPassViewModel: ForgotPassViewMode
             .fillMaxSize()
             .background(Color.Black)
     ){
+        ScreenLoader( isLoading = loading )
+
         Box(
             modifier = Modifier
                 .fillMaxSize()

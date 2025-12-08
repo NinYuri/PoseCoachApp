@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.posecoach.R
 import com.example.posecoach.components.ContinueButton
+import com.example.posecoach.components.ScreenLoader
 import com.example.posecoach.data.model.ResendOtp
 import com.example.posecoach.data.model.VerifyOTP
 import com.example.posecoach.data.viewModel.UserViewModel
@@ -182,6 +183,8 @@ fun OTPScreen(navController: NavController, userViewModel: UserViewModel, tempor
             .fillMaxSize()
             .background(Color.Black)
     ){
+        ScreenLoader( isLoading = loading )
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
