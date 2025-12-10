@@ -1,0 +1,200 @@
+[
+  {
+    "name": "Elevaciones laterales",
+    "muscle_group": "hombros",
+    "ideal_angles": {
+      "brazo": { "ideal": 90, "min": 70, "max": 100, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "brazo > 100", "error": "Elevación excesiva del brazo" },
+      { "condicion": "brazo < 70", "error": "Elevación insuficiente del brazo" }
+    ]
+  },
+  {
+    "name": "Press militar básico",
+    "muscle_group": "hombros",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 80, "max": 110, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 80", "error": "Flexión insuficiente del codo" },
+      { "condicion": "codo > 110", "error": "Extensión incompleta" }
+    ]
+  },
+  {
+    "name": "Press de hombro",
+    "muscle_group": "hombros",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 80, "max": 110, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 80", "error": "Codo demasiado cerrado" },
+      { "condicion": "codo > 110", "error": "Extensión insuficiente" }
+    ]
+  },
+  {
+    "name": "Press Arnold básico",
+    "muscle_group": "hombros",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 75, "max": 105, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 75", "error": "Codo demasiado cerrado" },
+      { "condicion": "codo > 105", "error": "Extensión incompleta" }
+    ]
+  },
+  {
+    "name": "Rotación externa",
+    "muscle_group": "hombros",
+    "ideal_angles": {
+      "codo": { "ideal": 45, "min": 30, "max": 60, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo > 60", "error": "Codo demasiado abierto" },
+      { "condicion": "codo < 30", "error": "Rotación insuficiente" }
+    ]
+  },
+  {
+    "name": "Rotación interna",
+    "muscle_group": "hombros",
+    "ideal_angles": {
+      "codo": { "ideal": 45, "min": 30, "max": 60, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo > 60", "error": "Codo demasiado abierto" },
+      { "condicion": "codo < 30", "error": "Rotación insuficiente" }
+    ]
+  },
+  {
+    "name": "Press militar intermedio",
+    "muscle_group": "hombros",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 75, "max": 105, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 75", "error": "Flexión insuficiente" },
+      { "condicion": "codo > 105", "error": "Extensión excesiva" }
+    ]
+  },
+  {
+    "name": "Elevaciones controladas",
+    "muscle_group": "hombros",
+    "ideal_angles": {
+      "brazo": { "ideal": 90, "min": 70, "max": 110, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "brazo < 70", "error": "Elevación insuficiente" },
+      { "condicion": "brazo > 110", "error": "Elevación excesiva" }
+    ]
+  },
+  {
+    "name": "Press Arnold intermedio",
+    "muscle_group": "hombros",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 75, "max": 105, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 75", "error": "Falta rotación" },
+      { "condicion": "codo > 105", "error": "Extensión excesiva" }
+    ]
+  },
+  {
+    "name": "Elevaciones frontales tensión",
+    "muscle_group": "hombros",
+    "ideal_angles": {
+      "brazo": { "ideal": 90, "min": 70, "max": 110, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "brazo < 70", "error": "Tensión insuficiente" },
+      { "condicion": "brazo > 110", "error": "Elevación excesiva" }
+    ]
+  },
+  {
+    "name": "Press de hombros",
+    "muscle_group": "hombros",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 75, "max": 105, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 75", "error": "Bajada incorrecta" },
+      { "condicion": "codo > 105", "error": "Empuje con espalda baja" }
+    ]
+  },
+  {
+    "name": "Flexiones pike",
+    "muscle_group": "hombros",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 70, "max": 110, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 70", "error": "Bajada insuficiente" },
+      { "condicion": "codo > 110", "error": "Brazos muy abiertos" }
+    ]
+  },
+  {
+    "name": "Press militar",
+    "muscle_group": "hombros",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 80, "max": 110, "landmarks": [13, 14] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 80", "error": "Flexión excesiva del codo" },
+      { "condicion": "codo > 110", "error": "Extensión incompleta" }
+    ]
+  },
+  {
+    "name": "Press Arnold",
+    "muscle_group": "hombros",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 75, "max": 105, "landmarks": [13, 14] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 75", "error": "Codo demasiado cerrado" },
+      { "condicion": "codo > 105", "error": "Extensión incompleta" }
+    ]
+  },
+  {
+    "name": "Remo al mentón",
+    "muscle_group": "hombros",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 80, "max": 100, "landmarks": [13, 14] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 80", "error": "Flexión insuficiente" },
+      { "condicion": "codo > 100", "error": "Elevación excesiva del codo" }
+    ]
+  },
+  {
+    "name": "Elevaciones frontales",
+    "muscle_group": "hombros",
+    "ideal_angles": {
+      "codo": { "ideal": 10, "min": 5, "max": 20, "landmarks": [13, 14] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo > 20", "error": "Codo demasiado doblado" },
+      { "condicion": "codo < 5", "error": "Codo demasiado extendido" }
+    ]
+  },
+  {
+    "name": "Handstand",
+    "muscle_group": "hombros",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 80, "max": 100, "landmarks": [13, 14] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 80", "error": "Bajada insuficiente" },
+      { "condicion": "codo > 100", "error": "Extensión incompleta" }
+    ]
+  },
+  {
+    "name": "Pike push ups",
+    "muscle_group": "hombros",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 80, "max": 100, "landmarks": [13, 14] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 80", "error": "Flexión insuficiente" },
+      { "condicion": "codo > 100", "error": "Empuje incompleto" }
+    ]
+  }
+]

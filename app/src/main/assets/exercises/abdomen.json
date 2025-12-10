@@ -1,0 +1,290 @@
+[
+  {
+    "name": "Crunch básico",
+    "muscle_group": "abdomen",
+    "ideal_angles": {
+      "tronco": {
+        "ideal": 45,
+        "min": 30,
+        "max": 60,
+        "landmarks": [11, 23]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "tronco < 30", "error": "Elevación insuficiente" },
+      { "condicion": "tronco > 60", "error": "Flexión excesiva" }
+    ]
+  },
+  {
+    "name": "Plancha estática",
+    "muscle_group": "abdomen",
+    "ideal_angles": {
+      "tronco": {
+        "ideal": 180,
+        "min": 165,
+        "max": 185,
+        "landmarks": [11, 23]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "tronco < 165", "error": "Cadera muy alta" },
+      { "condicion": "tronco > 185", "error": "Cadera muy baja" }
+    ]
+  },
+  {
+    "name": "Toe taps",
+    "muscle_group": "abdomen",
+    "ideal_angles": {
+      "cadera": {
+        "ideal": 90,
+        "min": 75,
+        "max": 110,
+        "landmarks": [23, 25]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 75", "error": "Rodillas muy cerca del pecho" },
+      { "condicion": "cadera > 110", "error": "Piernas muy estiradas" }
+    ]
+  },
+  {
+    "name": "Giro ruso",
+    "muscle_group": "abdomen",
+    "ideal_angles": {
+      "tronco": {
+        "ideal": 45,
+        "min": 30,
+        "max": 60,
+        "landmarks": [11, 23]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "tronco < 30", "error": "Inclinación insuficiente" },
+      { "condicion": "tronco > 60", "error": "Inclinación excesiva" }
+    ]
+  },
+  {
+    "name": "Crunch en silla",
+    "muscle_group": "abdomen",
+    "ideal_angles": {
+      "tronco": {
+        "ideal": 45,
+        "min": 30,
+        "max": 60,
+        "landmarks": [11, 23]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "tronco < 30", "error": "Elevación insuficiente" },
+      { "condicion": "tronco > 60", "error": "Flexión excesiva" }
+    ]
+  },
+  {
+    "name": "Hollow hold",
+    "muscle_group": "abdomen",
+    "ideal_angles": {
+      "tronco": {
+        "ideal": 180,
+        "min": 165,
+        "max": 185,
+        "landmarks": [11, 23]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "tronco < 165", "error": "Cadera demasiado alta" },
+      { "condicion": "tronco > 185", "error": "Arqueo lumbar excesivo" }
+    ]
+  },
+  {
+    "name": "Elevaciones de piernas",
+    "muscle_group": "abdomen",
+    "ideal_angles": {
+      "cadera": {
+        "ideal": 90,
+        "min": 70,
+        "max": 110,
+        "landmarks": [23, 24]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 70", "error": "Flexión insuficiente" },
+      { "condicion": "cadera > 110", "error": "Movimiento excesivo" }
+    ]
+  },
+  {
+    "name": "Crunch intermedio",
+    "muscle_group": "abdomen",
+    "ideal_angles": {
+      "tronco": {
+        "ideal": 45,
+        "min": 30,
+        "max": 60,
+        "landmarks": [11, 12, 23, 24]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "tronco < 30", "error": "Elevación insuficiente" },
+      { "condicion": "tronco > 60", "error": "Flexión excesiva" }
+    ]
+  },
+  {
+    "name": "Twist ruso",
+    "muscle_group": "abdomen",
+    "ideal_angles": {
+      "tronco": {
+        "ideal": 45,
+        "min": 30,
+        "max": 60,
+        "landmarks": [11, 12, 23, 24]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "tronco < 30", "error": "Giro insuficiente" },
+      { "condicion": "tronco > 60", "error": "Giro excesivo" }
+    ]
+  },
+  {
+    "name": "Rodillo abdominal",
+    "muscle_group": "abdomen",
+    "ideal_angles": {
+      "tronco": {
+        "ideal": 180,
+        "min": 160,
+        "max": 190,
+        "landmarks": [11, 12, 23, 24]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "tronco < 160", "error": "Extensión insuficiente" },
+      { "condicion": "tronco > 190", "error": "Sobreextensión lumbar" }
+    ]
+  },
+  {
+    "name": "Mountain climbers cruzados",
+    "muscle_group": "abdomen",
+    "ideal_angles": {
+      "cadera": {
+        "ideal": 90,
+        "min": 70,
+        "max": 110,
+        "landmarks": [23, 24]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 70", "error": "Cadera baja" },
+      { "condicion": "cadera > 110", "error": "Cadera alta" }
+    ]
+  },
+  {
+    "name": "Crunch con banda",
+    "muscle_group": "abdomen",
+    "ideal_angles": {
+      "tronco": {
+        "ideal": 45,
+        "min": 30,
+        "max": 60,
+        "landmarks": [11, 12, 23, 24]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "tronco < 30", "error": "Elevación insuficiente" },
+      { "condicion": "tronco > 60", "error": "Flexión excesiva" }
+    ]
+  },
+  {
+    "name": "Elevación piernas",
+    "muscle_group": "abdomen",
+    "ideal_angles": {
+      "cadera": {
+        "ideal": 90,
+        "min": 70,
+        "max": 110,
+        "landmarks": [23, 24]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 70", "error": "Flexión insuficiente" },
+      { "condicion": "cadera > 110", "error": "Movimiento excesivo" }
+    ]
+  },
+  {
+    "name": "V Ups",
+    "muscle_group": "abdomen",
+    "ideal_angles": {
+      "cadera": {
+        "ideal": 90,
+        "min": 70,
+        "max": 110,
+        "landmarks": [23, 24]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 70", "error": "Flexión insuficiente" },
+      { "condicion": "cadera > 110", "error": "Movimiento excesivo" }
+    ]
+  },
+  {
+    "name": "Crunch al pecho",
+    "muscle_group": "abdomen",
+    "ideal_angles": {
+      "tronco": {
+        "ideal": 45,
+        "min": 30,
+        "max": 60,
+        "landmarks": [23, 24]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "tronco < 30", "error": "Elevación insuficiente" },
+      { "condicion": "tronco > 60", "error": "Flexión excesiva" }
+    ]
+  },
+  {
+    "name": "Mountain climbers",
+    "muscle_group": "abdomen",
+    "ideal_angles": {
+      "cadera": {
+        "ideal": 90,
+        "min": 70,
+        "max": 110,
+        "landmarks": [23, 24]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 70", "error": "Flexión insuficiente" },
+      { "condicion": "cadera > 110", "error": "Elevación excesiva" }
+    ]
+  },
+  {
+    "name": "Crunch",
+    "muscle_group": "abdomen",
+    "ideal_angles": {
+      "tronco": {
+        "ideal": 45,
+        "min": 30,
+        "max": 60,
+        "landmarks": [23, 24]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "tronco < 30", "error": "Movimiento corto" },
+      { "condicion": "tronco > 60", "error": "Flexión excesiva" }
+    ]
+  },
+  {
+    "name": "Plancha y remo",
+    "muscle_group": "abdomen",
+    "ideal_angles": {
+      "codo": {
+        "ideal": 90,
+        "min": 80,
+        "max": 100,
+        "landmarks": [13, 14]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 80", "error": "Flexión insuficiente" },
+      { "condicion": "codo > 100", "error": "Extensión incompleta" }
+    ]
+  }
+]

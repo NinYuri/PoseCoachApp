@@ -21,6 +21,7 @@ import com.example.posecoach.data.viewModel.ProfileViewModel
 import com.example.posecoach.data.viewModel.ProfileViewModelFactory
 import com.example.posecoach.data.viewModel.RegistroViewModel
 import com.example.posecoach.data.viewModel.RoutineViewModel
+import com.example.posecoach.data.viewModel.SelectedExVM
 import com.example.posecoach.data.viewModel.UserViewModel
 import com.example.posecoach.homeScreens.CameraScreen
 import com.example.posecoach.homeScreens.HomeScreen
@@ -80,6 +81,7 @@ fun MyApp(){
 
     val emPhViewModel: EmPhViewModel = viewModel()
     val routineViewModel: RoutineViewModel = viewModel()
+    val selectedExVM: SelectedExVM = viewModel()
 
     NavHost(
         navController = navController,
@@ -114,9 +116,9 @@ fun MyApp(){
         composable ("home") { HomeScreen(navController, profileViewModel, routineViewModel) }
         composable ("routine/{day}") {
             val day = it.arguments?.getString("day") ?: ""
-            RoutineScreen(navController, routineViewModel, day)
+            RoutineScreen(navController, routineViewModel, day, selectedExVM)
         }
-        composable ("camera") { CameraScreen(navController) }
+        composable ("camera") { CameraScreen(navController, selectedExVM) }
 
         // PROFILE
         composable("profile") { ProfileScreen(navController, profileViewModel, loginViewModel) }

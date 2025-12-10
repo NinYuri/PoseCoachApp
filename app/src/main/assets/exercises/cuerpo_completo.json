@@ -1,0 +1,290 @@
+[
+  {
+    "name": "Burpees dinámicos",
+    "muscle_group": "cuerpo_completo",
+    "ideal_angles": {
+      "cadera": {
+        "ideal": 90,
+        "min": 70,
+        "max": 110,
+        "landmarks": [23, 24]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 70", "error": "Flexión insuficiente de cadera" },
+      { "condicion": "cadera > 110", "error": "Elevación excesiva de cadera" }
+    ]
+  },
+  {
+    "name": "Sentadilla con press",
+    "muscle_group": "cuerpo_completo",
+    "ideal_angles": {
+      "rodilla": {
+        "ideal": 90,
+        "min": 75,
+        "max": 110,
+        "landmarks": [25, 26]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "rodilla < 75", "error": "Sentadilla corta" },
+      { "condicion": "rodilla > 110", "error": "Sentadilla muy profunda" }
+    ]
+  },
+  {
+    "name": "Zancada con curl bíceps",
+    "muscle_group": "cuerpo_completo",
+    "ideal_angles": {
+      "rodilla": {
+        "ideal": 90,
+        "min": 80,
+        "max": 110,
+        "landmarks": [25, 26]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "rodilla < 80", "error": "Zancada corta" },
+      { "condicion": "rodilla > 110", "error": "Zancada muy profunda" }
+    ]
+  },
+  {
+    "name": "Escaladores",
+    "muscle_group": "cuerpo_completo",
+    "ideal_angles": {
+      "cadera": {
+        "ideal": 90,
+        "min": 70,
+        "max": 110,
+        "landmarks": [23, 24]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 70", "error": "Cadera baja" },
+      { "condicion": "cadera > 110", "error": "Cadera alta" }
+    ]
+  },
+  {
+    "name": "Press elevación rodillas",
+    "muscle_group": "cuerpo_completo",
+    "ideal_angles": {
+      "cadera": {
+        "ideal": 90,
+        "min": 75,
+        "max": 115,
+        "landmarks": [23, 24]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 75", "error": "Elevación insuficiente de rodillas" },
+      { "condicion": "cadera > 115", "error": "Elevación excesiva de cadera" }
+    ]
+  },
+  {
+    "name": "Clean con mancuerna",
+    "muscle_group": "cuerpo_completo",
+    "ideal_angles": {
+      "cadera": {
+        "ideal": 90,
+        "min": 70,
+        "max": 115,
+        "landmarks": [23, 24]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 70", "error": "Flexión insuficiente de cadera" },
+      { "condicion": "cadera > 115", "error": "Extensión excesiva" }
+    ]
+  },
+  {
+    "name": "Sentadilla cuerpo completo",
+    "muscle_group": "cuerpo_completo",
+    "ideal_angles": {
+      "rodilla": {
+        "ideal": 90,
+        "min": 75,
+        "max": 105,
+        "landmarks": [23, 25]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "rodilla < 75", "error": "Flexión insuficiente" },
+      { "condicion": "rodilla > 105", "error": "Descenso excesivo" }
+    ]
+  },
+  {
+    "name": "Peso muerto integrado",
+    "muscle_group": "cuerpo_completo",
+    "ideal_angles": {
+      "cadera": {
+        "ideal": 45,
+        "min": 30,
+        "max": 60,
+        "landmarks": [11, 23]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 30", "error": "Inclinación insuficiente" },
+      { "condicion": "cadera > 60", "error": "Inclinación excesiva" }
+    ]
+  },
+  {
+    "name": "Press de pecho",
+    "muscle_group": "cuerpo_completo",
+    "ideal_angles": {
+      "codo": {
+        "ideal": 90,
+        "min": 75,
+        "max": 105,
+        "landmarks": [11, 13]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 75", "error": "Flexión insuficiente" },
+      { "condicion": "codo > 105", "error": "Apertura excesiva de codos" }
+    ]
+  },
+  {
+    "name": "Plancha rodillas",
+    "muscle_group": "cuerpo_completo",
+    "ideal_angles": {
+      "tronco": {
+        "ideal": 180,
+        "min": 165,
+        "max": 185,
+        "landmarks": [11, 23]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "tronco > 185", "error": "Cadera baja" },
+      { "condicion": "tronco < 165", "error": "Cadera alta" }
+    ]
+  },
+  {
+    "name": "Puente de glúteo",
+    "muscle_group": "cuerpo_completo",
+    "ideal_angles": {
+      "cadera": {
+        "ideal": 180,
+        "min": 165,
+        "max": 190,
+        "landmarks": [11, 23]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 165", "error": "Elevación insuficiente" },
+      { "condicion": "cadera > 190", "error": "Hiperextensión lumbar" }
+    ]
+  },
+  {
+    "name": "Press hombro mancuernas",
+    "muscle_group": "cuerpo_completo",
+    "ideal_angles": {
+      "codo": {
+        "ideal": 90,
+        "min": 75,
+        "max": 105,
+        "landmarks": [11, 13]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 75", "error": "Flexión insuficiente" },
+      { "condicion": "codo > 105", "error": "Apertura excesiva de codos" }
+    ]
+  },
+  {
+    "name": "Burpees",
+    "muscle_group": "cuerpo_completo",
+    "ideal_angles": {
+      "cadera": {
+        "ideal": 90,
+        "min": 70,
+        "max": 110,
+        "landmarks": [23, 24]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 70", "error": "Flexión insuficiente de cadera" },
+      { "condicion": "cadera > 110", "error": "Extensión excesiva de cadera" }
+    ]
+  },
+  {
+    "name": "Thrusters",
+    "muscle_group": "cuerpo_completo",
+    "ideal_angles": {
+      "rodilla": {
+        "ideal": 90,
+        "min": 80,
+        "max": 110,
+        "landmarks": [25, 26]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "rodilla < 80", "error": "Sentadilla corta" },
+      { "condicion": "rodilla > 110", "error": "Sentadilla superficial" }
+    ]
+  },
+  {
+    "name": "Clean and press",
+    "muscle_group": "cuerpo_completo",
+    "ideal_angles": {
+      "rodilla": {
+        "ideal": 90,
+        "min": 75,
+        "max": 105,
+        "landmarks": [25, 26]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "rodilla < 75", "error": "Flexión insuficiente de rodilla" },
+      { "condicion": "rodilla > 105", "error": "Extensión insuficiente" }
+    ]
+  },
+  {
+    "name": "Snatch alternado",
+    "muscle_group": "cuerpo_completo",
+    "ideal_angles": {
+      "cadera": {
+        "ideal": 90,
+        "min": 70,
+        "max": 110,
+        "landmarks": [23, 24]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 70", "error": "Flexión insuficiente de cadera" },
+      { "condicion": "cadera > 110", "error": "Extensión excesiva" }
+    ]
+  },
+  {
+    "name": "Remo con Sentadilla",
+    "muscle_group": "cuerpo_completo",
+    "ideal_angles": {
+      "rodilla": {
+        "ideal": 90,
+        "min": 80,
+        "max": 110,
+        "landmarks": [25, 26]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "rodilla < 80", "error": "Sentadilla muy profunda" },
+      { "condicion": "rodilla > 110", "error": "Sentadilla superficial" }
+    ]
+  },
+  {
+    "name": "Plancha remo y salto",
+    "muscle_group": "cuerpo_completo",
+    "ideal_angles": {
+      "codo": {
+        "ideal": 90,
+        "min": 80,
+        "max": 100,
+        "landmarks": [13, 14]
+      }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 80", "error": "Flexión insuficiente" },
+      { "condicion": "codo > 100", "error": "Extensión excesiva del codo" }
+    ]
+  }
+]

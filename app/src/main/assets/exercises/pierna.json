@@ -1,0 +1,200 @@
+[
+  {
+    "name": "Sentadilla al aire",
+    "muscle_group": "pierna",
+    "ideal_angles": {
+      "rodilla": { "ideal": 90, "min": 80, "max": 100, "landmarks": [25, 26] }
+    },
+    "common_mistakes": [
+      { "condicion": "rodilla < 80", "error": "Flexión insuficiente de rodilla" },
+      { "condicion": "rodilla > 100", "error": "Rodilla demasiado extendida en la bajada" }
+    ]
+  },
+  {
+    "name": "Subida a banco",
+    "muscle_group": "pierna",
+    "ideal_angles": {
+      "rodilla": { "ideal": 90, "min": 75, "max": 105, "landmarks": [25, 26] }
+    },
+    "common_mistakes": [
+      { "condicion": "rodilla < 75", "error": "Paso demasiado corto" },
+      { "condicion": "rodilla > 105", "error": "Rodilla supera un rango seguro durante la subida" }
+    ]
+  },
+  {
+    "name": "Elevación de talones",
+    "muscle_group": "pierna",
+    "ideal_angles": {
+      "tobillo": { "ideal": 25, "min": 10, "max": 35, "landmarks": [27, 25] }
+    },
+    "common_mistakes": [
+      { "condicion": "tobillo < 10", "error": "Elevación insuficiente del talón" },
+      { "condicion": "tobillo > 35", "error": "Elevación excesiva que provoca rebote" }
+    ]
+  },
+  {
+    "name": "Peso muerto básico",
+    "muscle_group": "pierna",
+    "ideal_angles": {
+      "cadera": { "ideal": 45, "min": 35, "max": 55, "landmarks": [23, 25] }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 35", "error": "Inclinación insuficiente" },
+      { "condicion": "cadera > 55", "error": "Inclinación excesiva que compromete la zona lumbar" }
+    ]
+  },
+  {
+    "name": "Step lateral",
+    "muscle_group": "pierna",
+    "ideal_angles": {
+      "rodilla": { "ideal": 45, "min": 30, "max": 60, "landmarks": [25, 26] }
+    },
+    "common_mistakes": [
+      { "condicion": "rodilla < 30", "error": "Apertura insuficiente del paso lateral" },
+      { "condicion": "rodilla > 60", "error": "Flexión excesiva" }
+    ]
+  },
+  {
+    "name": "Marcha alta",
+    "muscle_group": "pierna",
+    "ideal_angles": {
+      "cadera": { "ideal": 90, "min": 70, "max": 110, "landmarks": [23, 25] }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 70", "error": "Rodilla no se eleva lo suficiente" },
+      { "condicion": "cadera > 110", "error": "Elevación excesiva con inclinación del torso" }
+    ]
+  },
+  {
+    "name": "Sentadilla búlgara",
+    "muscle_group": "pierna",
+    "ideal_angles": {
+      "rodilla": { "ideal": 90, "min": 80, "max": 100, "landmarks": [25, 26] }
+    },
+    "common_mistakes": [
+      { "condicion": "rodilla > 100", "error": "Rodilla pasa demasiado al frente" },
+      { "condicion": "rodilla < 80", "error": "Flexión insuficiente" }
+    ]
+  },
+  {
+    "name": "Squat caminando con carga",
+    "muscle_group": "pierna",
+    "ideal_angles": {
+      "rodilla": { "ideal": 90, "min": 80, "max": 100, "landmarks": [25, 26] }
+    },
+    "common_mistakes": [
+      { "condicion": "rodilla < 80", "error": "Paso muy largo, exceso de flexión" },
+      { "condicion": "rodilla > 100", "error": "Paso muy corto" }
+    ]
+  },
+  {
+    "name": "Peso muerto rumano",
+    "muscle_group": "pierna",
+    "ideal_angles": {
+      "cadera": { "ideal": 45, "min": 35, "max": 55, "landmarks": [23, 24] }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 35", "error": "Poca flexión de cadera, el movimiento es muy corto" },
+      { "condicion": "cadera > 55", "error": "Flexión excesiva, la espalda tiende a curvarse" }
+    ]
+  },
+  {
+    "name": "Sentadilla goblet",
+    "muscle_group": "pierna",
+    "ideal_angles": {
+      "rodilla": { "ideal": 90, "min": 80, "max": 100, "landmarks": [25, 26] }
+    },
+    "common_mistakes": [
+      { "condicion": "rodilla < 80", "error": "Sentadilla muy profunda" },
+      { "condicion": "rodilla > 100", "error": "Superficial, poca flexión" }
+    ]
+  },
+  {
+    "name": "Prensa de piernas",
+    "muscle_group": "pierna",
+    "ideal_angles": {
+      "rodilla": { "ideal": 90, "min": 80, "max": 100, "landmarks": [25, 26] }
+    },
+    "common_mistakes": [
+      { "condicion": "rodilla < 80", "error": "Baja demasiado, más de lo seguro" },
+      { "condicion": "rodilla > 100", "error": "Movimiento muy corto" }
+    ]
+  },
+  {
+    "name": "Curl femoral",
+    "muscle_group": "pierna",
+    "ideal_angles": {
+      "rodilla": { "ideal": 45, "min": 30, "max": 60, "landmarks": [25, 26] }
+    },
+    "common_mistakes": [
+      { "condicion": "rodilla < 30", "error": "Flexión insuficiente" },
+      { "condicion": "rodilla > 60", "error": "Excesiva flexión con impulso" }
+    ]
+  },
+  {
+    "name": "Sentadilla con salto",
+    "muscle_group": "pierna",
+    "ideal_angles": {
+      "rodilla": { "ideal": 90, "min": 80, "max": 100, "landmarks": [25, 26] }
+    },
+    "common_mistakes": [
+      { "condicion": "rodilla > 100", "error": "Rodilla extendida en el aterrizaje" },
+      { "condicion": "rodilla < 80", "error": "Poca flexión antes del salto" }
+    ]
+  },
+  {
+    "name": "Prensa inclinada",
+    "muscle_group": "pierna",
+    "ideal_angles": {
+      "rodilla": { "ideal": 90, "min": 80, "max": 100, "landmarks": [25, 26] }
+    },
+    "common_mistakes": [
+      { "condicion": "rodilla < 80", "error": "Baja demasiado profundo" },
+      { "condicion": "rodilla > 100", "error": "Recorrido muy corto" }
+    ]
+  },
+  {
+    "name": "Sentadilla frontal",
+    "muscle_group": "pierna",
+    "ideal_angles": {
+      "rodilla": { "ideal": 90, "min": 80, "max": 100, "landmarks": [25, 26] }
+    },
+    "common_mistakes": [
+      { "condicion": "rodilla < 80", "error": "Insuficiente profundidad" },
+      { "condicion": "rodilla > 100", "error": "Superficial" }
+    ]
+  },
+  {
+    "name": "Desplantes caminando",
+    "muscle_group": "pierna",
+    "ideal_angles": {
+      "rodilla": { "ideal": 90, "min": 80, "max": 100, "landmarks": [25, 26] }
+    },
+    "common_mistakes": [
+      { "condicion": "rodilla > 100", "error": "Paso demasiado largo" },
+      { "condicion": "rodilla < 80", "error": "Flexión excesiva" }
+    ]
+  },
+  {
+    "name": "Hack squat en máquina",
+    "muscle_group": "pierna",
+    "ideal_angles": {
+      "rodilla": { "ideal": 90, "min": 75, "max": 110, "landmarks": [25, 26] }
+    },
+    "common_mistakes": [
+      { "condicion": "rodilla < 75", "error": "Descenso insuficiente" },
+      { "condicion": "rodilla > 110", "error": "Flexión excesiva" }
+    ]
+  },
+  {
+    "name": "Peso muerto",
+    "muscle_group": "pierna",
+    "ideal_angles": {
+      "cadera": { "ideal": 90, "min": 70, "max": 110, "landmarks": [23, 24] }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 70", "error": "Rango muy corto" },
+      { "condicion": "cadera > 110", "error": "Excesiva flexión que compromete postura" }
+    ]
+  }
+]

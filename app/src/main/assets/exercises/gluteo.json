@@ -1,0 +1,200 @@
+[
+  {
+    "name": "Puente de glúteo",
+    "muscle_group": "gluteo",
+    "ideal_angles": {
+      "cadera": { "ideal": 90, "min": 80, "max": 100, "landmarks": [23, 25] }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 80", "error": "Cadera muy baja" },
+      { "condicion": "cadera > 100", "error": "Hiperextensión lumbar" }
+    ]
+  },
+  {
+    "name": "Patada de glúteo",
+    "muscle_group": "gluteo",
+    "ideal_angles": {
+      "cadera": { "ideal": 45, "min": 30, "max": 60, "landmarks": [23, 25] }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 30", "error": "Poca elevación" },
+      { "condicion": "cadera > 60", "error": "Arqueo lumbar" }
+    ]
+  },
+  {
+    "name": "Puente isométrico",
+    "muscle_group": "gluteo",
+    "ideal_angles": {
+      "cadera": { "ideal": 90, "min": 80, "max": 100, "landmarks": [23, 25] }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 80", "error": "Altura insuficiente" },
+      { "condicion": "cadera > 100", "error": "Hiperextensión" }
+    ]
+  },
+  {
+    "name": "Abducciones laterales",
+    "muscle_group": "gluteo",
+    "ideal_angles": {
+      "cadera": { "ideal": 30, "min": 20, "max": 45, "landmarks": [23, 25] }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 20", "error": "Apertura mínima" },
+      { "condicion": "cadera > 45", "error": "Apertura excesiva" }
+    ]
+  },
+  {
+    "name": "Elevación pelvis",
+    "muscle_group": "gluteo",
+    "ideal_angles": {
+      "cadera": { "ideal": 90, "min": 80, "max": 100, "landmarks": [23, 25] }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 80", "error": "Poca activación" },
+      { "condicion": "cadera > 100", "error": "Arqueo lumbar" }
+    ]
+  },
+  {
+    "name": "Abducción cadera",
+    "muscle_group": "gluteo",
+    "ideal_angles": {
+      "cadera": { "ideal": 30, "min": 20, "max": 45, "landmarks": [23, 25] }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 20", "error": "Movimiento corto" },
+      { "condicion": "cadera > 45", "error": "Control insuficiente" }
+    ]
+  },
+  {
+    "name": "Hipthrust intermedio",
+    "muscle_group": "gluteo",
+    "ideal_angles": {
+      "cadera": { "ideal": 90, "min": 75, "max": 105, "landmarks": [23, 24] }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 75", "error": "Extensión baja" },
+      { "condicion": "cadera > 105", "error": "Desalineación columna" }
+    ]
+  },
+  {
+    "name": "Patada glúteo polea",
+    "muscle_group": "gluteo",
+    "ideal_angles": {
+      "cadera": { "ideal": 45, "min": 30, "max": 60, "landmarks": [23, 24] }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 30", "error": "Extensión insuficiente" },
+      { "condicion": "cadera > 60", "error": "Arqueo lumbar" }
+    ]
+  },
+  {
+    "name": "Abducción de cadera",
+    "muscle_group": "gluteo",
+    "ideal_angles": {
+      "cadera": { "ideal": 30, "min": 20, "max": 45, "landmarks": [23, 24] }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 20", "error": "Recorrido corto" },
+      { "condicion": "cadera > 45", "error": "Apertura excesiva" }
+    ]
+  },
+  {
+    "name": "Sumo intermedio",
+    "muscle_group": "gluteo",
+    "ideal_angles": {
+      "rodilla": { "ideal": 90, "min": 75, "max": 105, "landmarks": [25, 26] }
+    },
+    "common_mistakes": [
+      { "condicion": "rodilla < 75", "error": "Poca profundidad" },
+      { "condicion": "rodilla > 105", "error": "Sobreflexión" }
+    ]
+  },
+  {
+    "name": "Step up lateral",
+    "muscle_group": "gluteo",
+    "ideal_angles": {
+      "rodilla": { "ideal": 90, "min": 80, "max": 110, "landmarks": [25, 26] }
+    },
+    "common_mistakes": [
+      { "condicion": "rodilla < 80", "error": "Flexión baja" },
+      { "condicion": "rodilla > 110", "error": "Flexión excesiva" }
+    ]
+  },
+  {
+    "name": "Kickback tension",
+    "muscle_group": "gluteo",
+    "ideal_angles": {
+      "cadera": { "ideal": 45, "min": 30, "max": 60, "landmarks": [23, 24] }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 30", "error": "Recorrido bajo" },
+      { "condicion": "cadera > 60", "error": "Compensa lumbar" }
+    ]
+  },
+  {
+    "name": "Hip thrust",
+    "muscle_group": "gluteo",
+    "ideal_angles": {
+      "cadera": { "ideal": 90, "min": 80, "max": 100, "landmarks": [23, 24] }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 80", "error": "Extensión insuficiente" },
+      { "condicion": "cadera > 100", "error": "Hiperextensión" }
+    ]
+  },
+  {
+    "name": "Kickback",
+    "muscle_group": "gluteo",
+    "ideal_angles": {
+      "cadera": { "ideal": 45, "min": 35, "max": 55, "landmarks": [23, 24] }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 45", "error": "Recorrido corto" },
+      { "condicion": "cadera > 55", "error": "Compensa lumbar" }
+    ]
+  },
+  {
+    "name": "Sentadilla sumo",
+    "muscle_group": "gluteo",
+    "ideal_angles": {
+      "cadera": { "ideal": 90, "min": 80, "max": 100, "landmarks": [23, 24] }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 80", "error": "Apertura insuficiente" },
+      { "condicion": "cadera > 100", "error": "Apertura excesiva" }
+    ]
+  },
+  {
+    "name": "Extensión de cadera",
+    "muscle_group": "gluteo",
+    "ideal_angles": {
+      "cadera": { "ideal": 90, "min": 80, "max": 100, "landmarks": [23, 24] }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 80", "error": "Extensión incompleta" },
+      { "condicion": "cadera > 100", "error": "Hiperextensión" }
+    ]
+  },
+  {
+    "name": "Zancadas hacia atrás",
+    "muscle_group": "gluteo",
+    "ideal_angles": {
+      "rodilla": { "ideal": 90, "min": 80, "max": 100, "landmarks": [25, 26] }
+    },
+    "common_mistakes": [
+      { "condicion": "rodilla < 80", "error": "Rodilla muy doblada" },
+      { "condicion": "rodilla > 100", "error": "Rodilla poco flexible" }
+    ]
+  },
+  {
+    "name": "Step up banco",
+    "muscle_group": "gluteo",
+    "ideal_angles": {
+      "rodilla": { "ideal": 90, "min": 80, "max": 100, "landmarks": [25, 26] }
+    },
+    "common_mistakes": [
+      { "condicion": "rodilla < 80", "error": "Poca flexión" },
+      { "condicion": "rodilla > 100", "error": "Flexión excesiva" }
+    ]
+  }
+]

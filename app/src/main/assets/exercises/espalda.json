@@ -1,0 +1,200 @@
+[
+  {
+    "name": "Dominadas lastradas",
+    "muscle_group": "espalda",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 80, "max": 110, "landmarks": [13, 14] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 80", "error": "Flexión insuficiente" },
+      { "condicion": "codo > 110", "error": "Extensión excesiva" }
+    ]
+  },
+  {
+    "name": "Peso muerto inter",
+    "muscle_group": "espalda",
+    "ideal_angles": {
+      "cadera": { "ideal": 90, "min": 70, "max": 110, "landmarks": [23, 24] }
+    },
+    "common_mistakes": [
+      { "condicion": "cadera < 70", "error": "Flexión de cadera insuficiente" },
+      { "condicion": "cadera > 110", "error": "Flexión excesiva" }
+    ]
+  },
+  {
+    "name": "Remo bajo",
+    "muscle_group": "espalda",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 80, "max": 100, "landmarks": [13, 14] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 80", "error": "Flexión excesiva" },
+      { "condicion": "codo > 100", "error": "Tirada muy corta" }
+    ]
+  },
+  {
+    "name": "Supermán",
+    "muscle_group": "espalda",
+    "ideal_angles": {
+      "tronco": { "ideal": 180, "min": 160, "max": 185, "landmarks": [11, 12, 23, 24] }
+    },
+    "common_mistakes": [
+      { "condicion": "tronco < 160", "error": "Extensión insuficiente" },
+      { "condicion": "tronco > 185", "error": "Sobreextensión lumbar" }
+    ]
+  },
+  {
+    "name": "Remo inclinado",
+    "muscle_group": "espalda",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 80, "max": 100, "landmarks": [13, 14] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 80", "error": "Flexión demasiado cerrada" },
+      { "condicion": "codo > 100", "error": "Flexión insuficiente" }
+    ]
+  },
+  {
+    "name": "Dominadas agarre inverso",
+    "muscle_group": "espalda",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 80, "max": 110, "landmarks": [13, 14] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 80", "error": "Rango de tirón incompleto" },
+      { "condicion": "codo > 110", "error": "Extensión excesiva" }
+    ]
+  },
+  {
+    "name": "Remo",
+    "muscle_group": "espalda",
+    "ideal_angles": {
+      "tronco": { "ideal": 45, "min": 30, "max": 60, "landmarks": [11, 12, 23, 24] }
+    },
+    "common_mistakes": [
+      { "condicion": "tronco < 30", "error": "Inclinación insuficiente" },
+      { "condicion": "tronco > 60", "error": "Inclinación excesiva" }
+    ]
+  },
+  {
+    "name": "Jalón al pecho",
+    "muscle_group": "espalda",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 75, "max": 110, "landmarks": [13, 14] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 75", "error": "Jalón demasiado profundo" },
+      { "condicion": "codo > 110", "error": "Jalón muy superficial" }
+    ]
+  },
+  {
+    "name": "Dominadas asistidas",
+    "muscle_group": "espalda",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 80, "max": 110, "landmarks": [13, 14] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 80", "error": "Fase de tirón incompleta" },
+      { "condicion": "codo > 110", "error": "Extensión excesiva" }
+    ]
+  },
+  {
+    "name": "Supermán intermedio",
+    "muscle_group": "espalda",
+    "ideal_angles": {
+      "tronco": { "ideal": 180, "min": 160, "max": 190, "landmarks": [11, 12, 23, 24] }
+    },
+    "common_mistakes": [
+      { "condicion": "tronco < 160", "error": "Extensión insuficiente" },
+      { "condicion": "tronco > 190", "error": "Sobreextensión lumbar" }
+    ]
+  },
+  {
+    "name": "Pull over",
+    "muscle_group": "espalda",
+    "ideal_angles": {
+      "codo": { "ideal": 120, "min": 100, "max": 140, "landmarks": [13, 14] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 100", "error": "Codos demasiado doblados" },
+      { "condicion": "codo > 140", "error": "Bajada excesiva" }
+    ]
+  },
+  {
+    "name": "Jalón con banda",
+    "muscle_group": "espalda",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 75, "max": 110, "landmarks": [13, 14] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 75", "error": "Flexión insuficiente" },
+      { "condicion": "codo > 110", "error": "Tirada superficial" }
+    ]
+  },
+  {
+    "name": "Jalón en polea",
+    "muscle_group": "espalda",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 80, "max": 110, "landmarks": [13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 80", "error": "Flexión insuficiente" },
+      { "condicion": "codo > 110", "error": "Extensión excesiva" }
+    ]
+  },
+  {
+    "name": "Remo en máquina",
+    "muscle_group": "espalda",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 70, "max": 110, "landmarks": [13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 70", "error": "Flexión muy cerrada" },
+      { "condicion": "codo > 110", "error": "Extensión excesiva" }
+    ]
+  },
+  {
+    "name": "Supermán básico",
+    "muscle_group": "espalda",
+    "ideal_angles": {
+      "tronco": { "ideal": 180, "min": 160, "max": 185, "landmarks": [11, 23] }
+    },
+    "common_mistakes": [
+      { "condicion": "tronco < 160", "error": "Extensión insuficiente" },
+      { "condicion": "tronco > 185", "error": "Sobreextensión lumbar" }
+    ]
+  },
+  {
+    "name": "Pull apart",
+    "muscle_group": "espalda",
+    "ideal_angles": {
+      "brazo": { "ideal": 90, "min": 70, "max": 110, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "brazo < 70", "error": "Apertura insuficiente" },
+      { "condicion": "brazo > 110", "error": "Apertura excesiva" }
+    ]
+  },
+  {
+    "name": "Hiperextensiones en piso",
+    "muscle_group": "espalda",
+    "ideal_angles": {
+      "tronco": { "ideal": 180, "min": 160, "max": 190, "landmarks": [11, 23] }
+    },
+    "common_mistakes": [
+      { "condicion": "tronco < 160", "error": "Extensión insuficiente" },
+      { "condicion": "tronco > 190", "error": "Sobreextensión lumbar" }
+    ]
+  },
+  {
+    "name": "Face pull",
+    "muscle_group": "espalda",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 75, "max": 105, "landmarks": [13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 75", "error": "Flexión insuficiente" },
+      { "condicion": "codo > 105", "error": "Codo demasiado abierto" }
+    ]
+  }
+]

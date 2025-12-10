@@ -1,0 +1,189 @@
+[
+  {
+    "name": "Flexiones con palmada",
+    "muscle_group": "pecho",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 80, "max": 110, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 80", "error": "Flexión insuficiente antes del impulso para la palmada" },
+      { "condicion": "codo > 110", "error": "Extensión excesiva al aterrizar de la palmada" }
+    ]
+  },
+  {
+    "name": "Press en banco",
+    "muscle_group": "pecho",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 80, "max": 100, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 80", "error": "Flexión excesiva del codo" },
+      { "condicion": "codo > 100", "error": "Movimiento muy corto, el codo no llega a suficiente flexión" }
+    ]
+  },
+  {
+    "name": "Press con agarre cerrado",
+    "muscle_group": "pecho",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 70, "max": 105, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 70", "error": "Demasiada flexión del codo" },
+      { "condicion": "codo > 105", "error": "Extensión incompleta del movimiento" }
+    ]
+  },
+  {
+    "name": "Press de pecho alternado",
+    "muscle_group": "pecho",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 80, "max": 100, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 80", "error": "Baja demasiado en la fase alternada" },
+      { "condicion": "codo > 100", "error": "El rango es muy corto al alternar los brazos" }
+    ]
+  },
+  {
+    "name": "Aperturas con banda",
+    "muscle_group": "pecho",
+    "ideal_angles": {
+      "codo": { "ideal": 10, "min": 5, "max": 20, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo > 20", "error": "Codos demasiado doblados" },
+      { "condicion": "codo < 5", "error": "Codos demasiado estirados" }
+    ]
+  },
+  {
+    "name": "Flexión pies elevados",
+    "muscle_group": "pecho",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 80, "max": 110, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 80", "error": "Flexión insuficiente" },
+      { "condicion": "codo > 110", "error": "Extensión excesiva, rango demasiado corto" }
+    ]
+  },
+  {
+    "name": "Press de pecho",
+    "muscle_group": "pecho",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 75, "max": 105, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 75", "error": "Demasiado profundo y carga el hombro" },
+      { "condicion": "codo > 105", "error": "Rango corto, poco estímulo en el pecho" }
+    ]
+  },
+  {
+    "name": "Aperturas",
+    "muscle_group": "pecho",
+    "ideal_angles": {
+      "codo": { "ideal": 120, "min": 110, "max": 140, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 110", "error": "Codos muy doblados, parece press" },
+      { "condicion": "codo > 140", "error": "Apertura excesiva que tensa el hombro" }
+    ]
+  },
+  {
+    "name": "Press inclinado",
+    "muscle_group": "pecho",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 75, "max": 105, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 75", "error": "Flexión excesiva, carga en hombros" },
+      { "condicion": "codo > 105", "error": "Rango muy corto" }
+    ]
+  },
+  {
+    "name": "Flexiones",
+    "muscle_group": "pecho",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 80, "max": 110, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 80", "error": "No baja lo suficiente" },
+      { "condicion": "codo > 110", "error": "Extensión incompleta" }
+    ]
+  },
+  {
+    "name": "Press de pecho hammer",
+    "muscle_group": "pecho",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 80, "max": 110, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 80", "error": "Muy profundo, tensa hombros" },
+      { "condicion": "codo > 110", "error": "Movimiento corto" }
+    ]
+  },
+  {
+    "name": "Flexiones en diamante",
+    "muscle_group": "pecho",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 80, "max": 110, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 80", "error": "No baja suficiente el pecho interno" },
+      { "condicion": "codo > 110", "error": "Extensión excesiva" }
+    ]
+  },
+  {
+    "name": "Press en piso",
+    "muscle_group": "pecho",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 80, "max": 110, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 80", "error": "No flexiona suficiente" },
+      { "condicion": "codo > 110", "error": "Extensión excesiva" }
+    ]
+  },
+  {
+    "name": "Flexión pared",
+    "muscle_group": "pecho",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 80, "max": 110, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 80", "error": "No baja suficiente" },
+      { "condicion": "codo > 110", "error": "Extensión demasiado amplia" }
+    ]
+  },
+  {
+    "name": "Press pecho",
+    "muscle_group": "pecho",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 80, "max": 110, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 80", "error": "Codos muy plegados" },
+      { "condicion": "codo > 110", "error": "Extensión incompleta" }
+    ]
+  },
+  {
+    "name": "Press con banda",
+    "muscle_group": "pecho",
+    "ideal_angles": {
+      "codo": { "ideal": 90, "min": 80, "max": 110, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo > 110", "error": "Codos abiertos desalinean el movimiento" },
+      { "condicion": "codo < 80", "error": "Pérdida de control" }
+    ]
+  },
+  {
+    "name": "Apertura",
+    "muscle_group": "pecho",
+    "ideal_angles": {
+      "codo": { "ideal": 20, "min": 10, "max": 30, "landmarks": [11, 13, 15] }
+    },
+    "common_mistakes": [
+      { "condicion": "codo < 10", "error": "Codo muy extendido" },
+      { "condicion": "codo > 30", "error": "Flexión excesiva" }
+    ]
+  }
+]

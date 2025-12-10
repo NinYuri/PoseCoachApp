@@ -27,20 +27,34 @@ import androidx.camera.video.Recorder
 import androidx.camera.video.Recording
 import androidx.camera.video.VideoCapture
 import androidx.camera.video.VideoRecordEvent
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import com.example.posecoach.R
 import com.example.posecoach.components.HomeMenu
+import com.example.posecoach.data.viewModel.SelectedExVM
 import com.example.posecoach.ui.theme.colorDarker
+import com.example.posecoach.ui.theme.colorPrin
 import com.example.posecoach.ui.theme.colorSec
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
@@ -49,10 +63,10 @@ import com.google.mediapipe.framework.image.MPImage
 import com.google.mediapipe.framework.image.BitmapImageBuilder
 import com.google.mediapipe.tasks.components.containers.NormalizedLandmark
 import com.google.mediapipe.tasks.core.BaseOptions
-import kotlin.math.abs
+import kotlin.math.absoluteValue
 
 @Composable
-fun CameraScreen(navController: NavController) {
+fun CameraScreen(navController: NavController, selectedExVM: SelectedExVM) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
@@ -67,33 +81,53 @@ fun CameraScreen(navController: NavController) {
     var frameWidth by remember { mutableStateOf(0) }
     var frameHeight by remember { mutableStateOf(0) }
 
-    fun checkPostureAlignment(
-        leftShoulder: NormalizedLandmark,
-        rightShoulder: NormalizedLandmark
-    ){
-        val shoulderDifference = abs(leftShoulder.y() - rightShoulder.y())
+    // Feedback
+    var feedbackMessage by remember { mutableStateOf("") }
 
-        if (shoulderDifference > 0.1f) {
-            // Postura desalineada - podrías mostrar feedback al usuario
-            Log.d("PoseCoach", "¡Postura desalineada detectada! Diferencia: $shoulderDifference")
-        }
+    // Función para calcular ángulo entre 3 puntos
+    fun calculateAngle(a: NormalizedLandmark, b: NormalizedLandmark, c: NormalizedLandmark): Float {
+        val ab = Pair(b.x() - a.x(), b.y() - a.y())
+        val cb = Pair(b.x() - c.x(), b.y() - c.y())
+        val dot = ab.first * cb.first + ab.second * cb.second
+        val cross = ab.first * cb.second - ab.second * cb.first
+        return Math.toDegrees(Math.atan2(cross.toDouble(), dot.toDouble())).toFloat().absoluteValue
     }
 
-    // Procesar los resultados de la detección de pose
+    // Procesar los resultados de la detección de pose y comparar con reglas del ejercicio
     fun processPoseResults(result: PoseLandmarkerResult) {
-        if (result.landmarks().isNotEmpty()) {
-            val landmarks = result.landmarks()[0]
+        val rules = selectedExVM.exerciseRules.value ?: return
+        val landmarksList = result.landmarks()
+        if(landmarksList.isEmpty()) return
 
-            // Ejemplo: obtener landmarks específicos (índices según MediaPipe Pose)
-            // 11: left shoulder, 12: right shoulder en el modelo completo
-            if (landmarks.size > 12) {
-                val leftShoulder = landmarks[11]
-                val rightShoulder = landmarks[12]
+        val landmarks = landmarksList[0]
+        var feedbackText = ""
 
-                // Lógica de coaching (ángulos)
-                checkPostureAlignment(leftShoulder, rightShoulder)
+        rules.ideal_angles.forEach { (angleName, rule) ->
+            if(rule.landmarks.size < 2) return@forEach
+
+            val measuredAngle = if(rule.landmarks.size == 2) {
+                // Línea simple
+                val dy = landmarks[rule.landmarks[1]].y() - landmarks[rule.landmarks[0]].y()
+                val dx = landmarks[rule.landmarks[1]].x() - landmarks[rule.landmarks[0]].x()
+                Math.toDegrees(Math.atan2(dy.toDouble(), dx.toDouble())).toFloat().absoluteValue
+            } else {
+                // Ángulo real de 3 puntos
+                calculateAngle(
+                    landmarks[rule.landmarks[0]],
+                    landmarks[rule.landmarks[1]],
+                    landmarks[rule.landmarks[2]]
+                )
+            }
+
+            // Verificación con min/max y errores
+            val mistakes = rules.common_mistakes.filter { it.condicion.contains("<") && measuredAngle < rule.min ||
+                    it.condicion.contains(">") && measuredAngle > rule.max }
+            for(m in mistakes) {
+                feedbackText += "${angleName}: ${m.error}\n"
             }
         }
+
+        feedbackMessage = feedbackText
     }
 
     // Inicializar MediaPipe Pose
@@ -106,14 +140,8 @@ fun CameraScreen(navController: NavController) {
             val options = PoseLandmarker.PoseLandmarkerOptions.builder()
                 .setBaseOptions(base)
                 .setRunningMode(RunningMode.LIVE_STREAM)
-                .setResultListener { result, _ ->
-                    poseResult = result
-                    // Procesar resultados de la pose
-                    processPoseResults(result)
-                }
-                .setErrorListener { error ->
-                    Log.e("PoseCoach", "Error en MediaPipe: $error")
-                }
+                .setResultListener { result, _ -> poseResult = result; processPoseResults(result) } // CAMBIO: procesamos pose
+                .setErrorListener { error -> Log.e("PoseCoach", "Error MediaPipe: $error") }
                 .build()
 
             poseLandmarker = PoseLandmarker.createFromOptions(context, options)
@@ -126,19 +154,12 @@ fun CameraScreen(navController: NavController) {
     // Procesar frame para detección de pose
     fun processFrameForPose(imageProxy: ImageProxy) {
         val detector = poseLandmarker ?: return imageProxy.close()
-
         try {
-            var bitmap = imageProxy.toBitmap()
-            bitmap = bitmap.rotate(imageProxy.imageInfo.rotationDegrees.toFloat())
-
-            // Guardar tamaño del frame
+            var bitmap = imageProxy.toBitmap().rotate(imageProxy.imageInfo.rotationDegrees.toFloat())
             frameWidth = bitmap.width
             frameHeight = bitmap.height
-
             val mpImage = BitmapImageBuilder(bitmap).build()
-
-            val ts = imageProxy.imageInfo.timestamp
-            detector.detectAsync(mpImage, ts) // Detectar poses
+            detector.detectAsync(mpImage, imageProxy.imageInfo.timestamp)
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {
@@ -271,6 +292,43 @@ fun CameraScreen(navController: NavController) {
             frameWidth = frameWidth,
             frameHeight = frameHeight
         )
+
+        // Mostrar feedback de errores
+        var showDialog by remember { mutableStateOf(false) }
+        if(feedbackMessage.isNotEmpty()) {
+            AlertDialog(
+                onDismissRequest = { },
+                confirmButton = {
+                    Button(
+                        onClick = { showDialog = false },
+                        colors = ButtonDefaults.buttonColors( containerColor = colorPrin ),
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                    ){
+                        Text("OK")
+                    }
+                },
+                title = {
+                    Text(
+                        "Feedback",
+                        color = colorSec,
+                        fontSize = 20.sp,
+                        fontFamily = FontFamily(Font(R.font.figtree)),
+                        fontWeight = FontWeight.Bold,
+                    )
+                },
+                text = {
+                    Text(
+                        feedbackMessage,
+                        color = Color.Black,
+                        fontSize = 18.sp,
+                        fontFamily = FontFamily(Font(R.font.figtree)),
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
+            )
+        }
     }
 
     HomeMenu(
@@ -293,7 +351,7 @@ fun ImageProxy.toMPImage(): MPImage {
     return BitmapImageBuilder(bitmap).build()
 }
 
-// Overlay con landmarks
+/* Overlay con landmarks
 @Composable
 fun PoseOverlay(poseResult: PoseLandmarkerResult?, frameWidth: Int, frameHeight: Int) {
     if(poseResult == null) return
@@ -353,6 +411,41 @@ fun PoseOverlay(poseResult: PoseLandmarkerResult?, frameWidth: Int, frameHeight:
                     end = androidx.compose.ui.geometry.Offset(lx(b.x()), ly(b.y())),
                     strokeWidth = 4f
                 )
+            }
+        }
+    }
+}
+
+ */
+
+@Composable
+fun PoseOverlay(poseResult: PoseLandmarkerResult?, frameWidth: Int, frameHeight: Int) {
+    if(poseResult == null) return
+
+    androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
+        val landmarksList = poseResult.landmarks()
+        if(landmarksList.isEmpty()) return@Canvas
+        val landmarks = landmarksList[0]
+        val widthScale = size.width
+        val heightScale = size.height
+
+        fun lx(norm: Float) = widthScale - ((widthScale - frameWidth * (widthScale / frameWidth)) / 2f + norm * frameWidth * (widthScale / frameWidth))
+        fun ly(norm: Float) = (heightScale - frameHeight * (heightScale / frameHeight)) / 2f + norm * frameHeight * (heightScale / frameHeight)
+
+        // Dibujo de puntos
+        for(lm in landmarks) drawCircle(color = colorSec, radius = 6f, center = androidx.compose.ui.geometry.Offset(lx(lm.x()), ly(lm.y())))
+
+        // Conexiones
+        val connections = listOf(
+            11 to 12, 11 to 13, 13 to 15, 12 to 14, 14 to 16, 11 to 23, 12 to 24,
+            23 to 24, 23 to 25, 25 to 27, 27 to 31, 24 to 26, 26 to 28, 28 to 32
+        )
+        for((start, end) in connections) {
+            if(start < landmarks.size && end < landmarks.size) {
+                val a = landmarks[start]
+                val b = landmarks[end]
+                drawLine(color = colorDarker, start = androidx.compose.ui.geometry.Offset(lx(a.x()), ly(a.y())),
+                    end = androidx.compose.ui.geometry.Offset(lx(b.x()), ly(b.y())), strokeWidth = 4f)
             }
         }
     }

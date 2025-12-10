@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -39,13 +40,20 @@ import com.example.posecoach.R
 import com.example.posecoach.components.ExerciseCard
 import com.example.posecoach.components.HomeMenu
 import com.example.posecoach.data.viewModel.RoutineViewModel
+import com.example.posecoach.data.viewModel.SelectedExVM
 import com.example.posecoach.ui.theme.colorSec
 import com.example.posecoach.ui.theme.colorWhite
 
 @Composable
-fun RoutineScreen(navController: NavController, routineViewModel: RoutineViewModel, selectedDayKey: String) {
+fun RoutineScreen(
+    navController: NavController,
+    routineViewModel: RoutineViewModel,
+    selectedDayKey: String,
+    selectedExVM: SelectedExVM
+){
     val rutinaCompleta = routineViewModel.rutinaCompleta.value
     val dia = rutinaCompleta?.dias?.get(selectedDayKey)
+    val context = LocalContext.current
 
     Box(
         modifier = Modifier
@@ -157,9 +165,12 @@ fun RoutineScreen(navController: NavController, routineViewModel: RoutineViewMod
                             ejercicio.imageUrl,
                             ejercicio.name,
                             "${ejercicio.series} x ${ejercicio.reps}",
-                            formatRestTime(ejercicio.restSeconds),
-                            {}
-                        )
+                            formatRestTime(ejercicio.restSeconds)
+                        ){
+                            routineViewModel.setSelectedExercise(ejercicio)
+                            selectedExVM.loadExerciseRules(context, dia.musculo.lowercase(), ejercicio.name)
+                            navController.navigate("camera")
+                        }
                     }
                 }
             }

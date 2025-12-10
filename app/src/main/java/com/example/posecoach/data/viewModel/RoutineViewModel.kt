@@ -3,9 +3,12 @@ package com.example.posecoach.data.viewModel
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.posecoach.data.mediaPipe.Exercise
+import com.example.posecoach.data.responses.Ejercicio
 import com.example.posecoach.data.responses.GenRoutineResponse
 import com.example.posecoach.data.responses.RoutDaysResponse
 import com.example.posecoach.network.ApiClientRoutines
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
@@ -17,6 +20,9 @@ class RoutineViewModel: ViewModel() {
     // Variables
     var rutina_id = mutableStateOf("")
     var rutinaCompleta = mutableStateOf<RoutDaysResponse?>(null)
+
+    private val _selectedExercise = MutableStateFlow<Ejercicio?>(null)
+    val selectedExercise = _selectedExercise
 
     private val api = ApiClientRoutines.routineApiService
 
@@ -101,6 +107,10 @@ class RoutineViewModel: ViewModel() {
             }
             loading.value = false
         }
+    }
+
+    fun setSelectedExercise(ejercicio: Ejercicio) {
+        _selectedExercise.value = ejercicio
     }
 
     private fun Errores(errorBody: String?): String? {
