@@ -1,9 +1,11 @@
 package com.example.posecoach
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -18,9 +20,11 @@ import com.example.posecoach.data.viewModel.LoginViewModel
 import com.example.posecoach.data.viewModel.ProfileViewModel
 import com.example.posecoach.data.viewModel.ProfileViewModelFactory
 import com.example.posecoach.data.viewModel.RegistroViewModel
+import com.example.posecoach.data.viewModel.RoutineViewModel
 import com.example.posecoach.data.viewModel.UserViewModel
 import com.example.posecoach.homeScreens.CameraScreen
 import com.example.posecoach.homeScreens.HomeScreen
+import com.example.posecoach.homeScreens.RoutineScreen
 import com.example.posecoach.network.ApiClient
 import com.example.posecoach.passwordScreens.Fields
 import com.example.posecoach.passwordScreens.NewPasswordScreen
@@ -50,6 +54,7 @@ import com.example.posecoach.userScreens.UsernameScreen
 import com.example.posecoach.userScreens.WelcomeScreen
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -59,6 +64,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MyApp(){
     val navController = rememberNavController()
@@ -73,10 +79,11 @@ fun MyApp(){
     val profileViewModel: ProfileViewModel = viewModel( factory = ProfileViewModelFactory(repo))
 
     val emPhViewModel: EmPhViewModel = viewModel()
+    val routineViewModel: RoutineViewModel = viewModel()
 
     NavHost(
         navController = navController,
-        startDestination = "home"
+        startDestination = "welcome"
     ){
         // LOGIN
         composable("welcome") { WelcomeScreen(navController, loginViewModel) }
@@ -104,7 +111,11 @@ fun MyApp(){
         composable ("equipment") { EquipmentScreen(navController, registroViewModel, userViewModel) }
 
         // HOME
-        composable ("home") { HomeScreen(navController, profileViewModel) }
+        composable ("home") { HomeScreen(navController, profileViewModel, routineViewModel) }
+        composable ("routine/{day}") {
+            val day = it.arguments?.getString("day") ?: ""
+            RoutineScreen(navController, routineViewModel, day)
+        }
         composable ("camera") { CameraScreen(navController) }
 
         // PROFILE
@@ -140,4 +151,3 @@ fun MyApp(){
         composable("changeGoal") { GoalChange(navController, profileViewModel) }
     }
 }
-

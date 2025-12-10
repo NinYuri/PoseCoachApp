@@ -25,17 +25,14 @@ import com.example.posecoach.data.responses.ResendOtpResponse
 import com.example.posecoach.data.responses.ResetPassResponse
 import com.example.posecoach.data.responses.UserProfileResponse
 import com.example.posecoach.data.responses.UsernameResponse
-import com.google.gson.stream.JsonToken
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 
 interface ApiService {
-    // USUARIOS
     @POST("users/register/initial/")
     suspend fun registerUser(
         @Body register: RegistroRequest

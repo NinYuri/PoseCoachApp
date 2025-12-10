@@ -1,13 +1,12 @@
 package com.example.posecoach.homeScreens
 
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,49 +30,96 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.posecoach.R
 import com.example.posecoach.components.Calendar
-import com.example.posecoach.components.CalendarDay
 import com.example.posecoach.components.HomeMenu
+import com.example.posecoach.components.ScreenLoader
+import com.example.posecoach.data.responses.Dia
 import com.example.posecoach.data.viewModel.ProfileViewModel
-import com.example.posecoach.ui.theme.colorDark
+import com.example.posecoach.data.viewModel.RoutineViewModel
 import com.example.posecoach.ui.theme.colorDarker
 import com.example.posecoach.ui.theme.colorPrin
 import com.example.posecoach.ui.theme.colorSec
 import com.example.posecoach.ui.theme.colorWhite
+import java.time.DayOfWeek
 import java.time.LocalDate
+import java.util.Locale
+import kotlin.random.Random
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HomeScreen(navController: NavController, profileViewModel: ProfileViewModel) {
+fun HomeScreen(navController: NavController, profileViewModel: ProfileViewModel, routineViewModel: RoutineViewModel) {
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
     val context = LocalContext.current
 
+    // BACKEND
+    val loading = routineViewModel.loading.value
+    val viewModelError = routineViewModel.error.value
+    val routineId = routineViewModel.rutina_id.value
+    val rutinaCompleta = routineViewModel.rutinaCompleta.value
+
     LaunchedEffect(Unit) { profileViewModel.getUserProfile() }
+
+    LaunchedEffect(Unit) { routineViewModel.checkRoutine() }
+
+    LaunchedEffect(routineId) {
+        if(routineId.isNotEmpty() && rutinaCompleta == null)
+            routineViewModel.getRoutine(routineId)
+    }
+
+    LaunchedEffect(viewModelError) {
+        if(viewModelError.isNotEmpty()) {
+            Toast.makeText(context, viewModelError, Toast.LENGTH_SHORT).show()
+            routineViewModel.clearMessages()
+        }
+    }
+
+    // Determinar clave del día
+    fun dayKeyFromDate(date: LocalDate): String {
+        return when(date.dayOfWeek) {
+            DayOfWeek.MONDAY -> "lunes"
+            DayOfWeek.TUESDAY -> "martes"
+            DayOfWeek.WEDNESDAY -> "miercoles"
+            DayOfWeek.THURSDAY -> "jueves"
+            DayOfWeek.FRIDAY -> "viernes"
+            DayOfWeek.SATURDAY -> "sabado"
+            DayOfWeek.SUNDAY -> "domingo"
+        }
+    }
+
+    // Obtener datos del día seleccionado
+    val selectedDayKey = dayKeyFromDate(selectedDate)
+    val diaSeleccionado: Dia? = rutinaCompleta?.dias?.get(selectedDayKey)
+
+    val duration = remember(selectedDate) { durationForDate(selectedDate) }
+    val muscle = diaSeleccionado?.musculo?.replace("_", " ")?.replaceFirstChar { it.uppercase() } ?: ""
+    val weekDayLabel = selectedDate.dayOfWeek.getDisplayName(java.time.format.TextStyle.FULL,
+        Locale("es", "ES")).replaceFirstChar { it.uppercase() }
+    val trainName = diaSeleccionado?.nombre ?: "Día de Descanso"
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
     ){
+        ScreenLoader( isLoading = loading )
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -199,17 +245,14 @@ fun HomeScreen(navController: NavController, profileViewModel: ProfileViewModel)
 
             Calendar(
                 selectedDate = selectedDate,
-                onDateSelected = { newDate ->
-                    selectedDate = newDate
-                    //Toast.makeText(context, "Fecha seleccionada: $newDate", Toast.LENGTH_SHORT).show()
-                },
+                onDateSelected = { newDate -> selectedDate = newDate },
                 modifier = Modifier.padding(vertical = 16.dp)
             )
 
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 25.dp)
+                    .padding(top = 40.dp, bottom = 20.dp)
             ){
                 Text(
                     "PROGRESO",
@@ -239,6 +282,9 @@ fun HomeScreen(navController: NavController, profileViewModel: ProfileViewModel)
                     modifier = Modifier.fillMaxWidth()
                 )
             }
+
+            ProgressBar(0.7f)
+            Spacer(modifier = Modifier.height(30.dp))
 
             Box(
                 modifier = Modifier
@@ -279,6 +325,12 @@ fun HomeScreen(navController: NavController, profileViewModel: ProfileViewModel)
                     .fillMaxWidth()
                     .padding(vertical = 20.dp)
                     .background(colorPrin, RoundedCornerShape(10.dp))
+                    .clickable {
+                        if(trainName != "Día de Descanso")
+                            navController.navigate("routine/$selectedDayKey")
+                        else
+                            Toast.makeText(context, "Hoy no hay ejercicios \uD83E\uDE77", Toast.LENGTH_SHORT).show()
+                    }
             ){
                 Column(
                     modifier = Modifier
@@ -287,35 +339,64 @@ fun HomeScreen(navController: NavController, profileViewModel: ProfileViewModel)
                         .padding(10.dp),
                     verticalArrangement = Arrangement.SpaceBetween
                 ){
-                    Box(
-                        modifier = Modifier.background(Color.Black, RoundedCornerShape(10.dp)),
-                        contentAlignment = Alignment.Center
-                    ){
-                        Row(
-                            modifier = Modifier.padding(vertical = 6.dp, horizontal = 15.dp),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
+                    Column {
+                        Box(
+                            modifier = Modifier.background(Color.Black, RoundedCornerShape(10.dp)),
+                            contentAlignment = Alignment.Center
                         ){
-                            Image(
-                                painter = painterResource(id = R.drawable.timer),
-                                contentDescription = "Timer",
-                                modifier = Modifier.size(22.dp),
-                                contentScale = ContentScale.Fit
-                            )
-                            Spacer(modifier = Modifier.width(5.dp))
-                            Text(
-                                "75 min",
-                                color = colorWhite,
-                                fontSize = 14.sp,
-                                fontFamily = FontFamily(Font(R.font.figtree))
-                            )
+                            Row(
+                                modifier = Modifier.padding(vertical = 6.dp, horizontal = 15.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ){
+                                Image(
+                                    painter = painterResource(id = R.drawable.timer),
+                                    contentDescription = "Timer",
+                                    modifier = Modifier.size(22.dp),
+                                    contentScale = ContentScale.Fit
+                                )
+                                Spacer(modifier = Modifier.width(5.dp))
+                                Text(
+                                    duration,
+                                    color = colorWhite,
+                                    fontSize = 14.sp,
+                                    fontFamily = FontFamily(Font(R.font.figtree))
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(6.dp))
+
+                        Box(
+                            modifier = Modifier.background(Color.Black, RoundedCornerShape(10.dp)),
+                            contentAlignment = Alignment.Center
+                        ){
+                            Row(
+                                modifier = Modifier.padding(vertical = 6.dp, horizontal = 15.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ){
+                                Image(
+                                    painter = painterResource(id = if(muscle.isNotEmpty()) R.drawable.muscle else R.drawable.rest),
+                                    contentDescription = "Muscle",
+                                    modifier = Modifier.size(20.dp),
+                                    contentScale = ContentScale.Fit
+                                )
+                                Spacer(modifier = Modifier.width(5.dp))
+                                Text(
+                                    muscle.ifEmpty { "Descanso" },
+                                    color = colorWhite,
+                                    fontSize = 14.sp,
+                                    fontFamily = FontFamily(Font(R.font.figtree))
+                                )
+                            }
                         }
                     }
 
-                    Column{
+                    Column {
                         Box{
                             Text(
-                                "MIERCOLES",
+                                weekDayLabel.uppercase(),
                                 color = Color.Black,
                                 fontSize = 27.sp,
                                 fontWeight = FontWeight.Bold,
@@ -331,7 +412,7 @@ fun HomeScreen(navController: NavController, profileViewModel: ProfileViewModel)
                             )
 
                             Text(
-                                "MIERCOLES",
+                                weekDayLabel.uppercase(),
                                 color = Color.Black,
                                 fontSize = 27.sp,
                                 fontWeight = FontWeight.Bold,
@@ -342,9 +423,9 @@ fun HomeScreen(navController: NavController, profileViewModel: ProfileViewModel)
                         }
 
                         Text(
-                            "Glúteo Avanzado",
+                            trainName,
                             color = Color.Black,
-                            fontSize = 25.sp,
+                            fontSize = 22.sp,
                             fontFamily = FontFamily(Font(R.font.figtree)),
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(top = 6.dp)
@@ -370,5 +451,35 @@ fun HomeScreen(navController: NavController, profileViewModel: ProfileViewModel)
             isRecording = false,
             onRecordClick = { }
         )
+    }
+}
+
+@Composable
+fun ProgressBar(progress: Float) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(35.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .background(colorDarker)
+    ){
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth(progress)
+                .clip(RoundedCornerShape(20.dp))
+                .background(colorSec)
+        )
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun durationForDate(date: LocalDate): String {
+    return if(date.dayOfWeek == DayOfWeek.SATURDAY || date.dayOfWeek == DayOfWeek.SUNDAY)
+        "Todo el día"
+    else {
+        val seed = date.toEpochDay().toInt()
+        val random = Random(seed)
+        "${random.nextInt(45, 96)} min"
     }
 }

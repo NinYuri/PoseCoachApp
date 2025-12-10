@@ -17,6 +17,7 @@ ui = "1.9.4"
 poseDetectionCommon = "17.0.0"
 foundation = "1.9.4"
 core = "1.51.0"
+animationVersion = "1.10.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -42,6 +43,7 @@ ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
 pose-detection-common = { group = "com.google.mlkit", name = "pose-detection-common", version.ref = "poseDetectionCommon" }
 androidx-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 core = { group = "com.google.ar", name = "core", version.ref = "core" }
+animation = { group = "androidx.compose.animation", name = "animation", version.ref = "animationVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
