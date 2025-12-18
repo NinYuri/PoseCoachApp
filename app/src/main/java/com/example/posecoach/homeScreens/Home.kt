@@ -24,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -72,16 +73,12 @@ fun HomeScreen(navController: NavController, profileViewModel: ProfileViewModel,
     val loading = routineViewModel.loading.value
     val viewModelError = routineViewModel.error.value
     val routineId = routineViewModel.rutina_id.value
-    val rutinaCompleta = routineViewModel.rutinaCompleta.value
+    val rutinaCompleta by routineViewModel.rutinaCompleta.collectAsState()
+    val routineReady = rutinaCompleta != null
 
     LaunchedEffect(Unit) { profileViewModel.getUserProfile() }
 
     LaunchedEffect(Unit) { routineViewModel.checkRoutine() }
-
-    LaunchedEffect(routineId) {
-        if(routineId.isNotEmpty() && rutinaCompleta == null)
-            routineViewModel.getRoutine(routineId)
-    }
 
     LaunchedEffect(viewModelError) {
         if(viewModelError.isNotEmpty()) {
@@ -325,7 +322,7 @@ fun HomeScreen(navController: NavController, profileViewModel: ProfileViewModel,
                     .fillMaxWidth()
                     .padding(vertical = 20.dp)
                     .background(colorPrin, RoundedCornerShape(10.dp))
-                    .clickable {
+                    .clickable(enabled = routineReady) {
                         if(trainName != "Día de Descanso")
                             navController.navigate("routine/$selectedDayKey")
                         else

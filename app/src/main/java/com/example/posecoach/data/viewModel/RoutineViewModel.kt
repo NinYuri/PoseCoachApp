@@ -19,7 +19,7 @@ class RoutineViewModel: ViewModel() {
 
     // Variables
     var rutina_id = mutableStateOf("")
-    var rutinaCompleta = mutableStateOf<RoutDaysResponse?>(null)
+    val rutinaCompleta = MutableStateFlow<RoutDaysResponse?>(null)
 
     private val _selectedExercise = MutableStateFlow<Ejercicio?>(null)
     val selectedExercise = _selectedExercise
@@ -178,6 +178,5 @@ class RoutineViewModel: ViewModel() {
     fun clearStates() {
         error.value = ""
         message.value = ""
-        rutina_id.value = ""
     }
 }

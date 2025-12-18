@@ -9,6 +9,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 object ApiClientRoutines {
     private val client = OkHttpClient.Builder()
         .addInterceptor(AuthInterceptor())
+        .connectTimeout(300, java.util.concurrent.TimeUnit.SECONDS)
+        .readTimeout(300, java.util.concurrent.TimeUnit.SECONDS)
+        .writeTimeout(160, java.util.concurrent.TimeUnit.SECONDS)
         .build()
 
     val routineApiService: RoutineApiService by lazy {

@@ -27,9 +27,14 @@ import androidx.camera.video.Recorder
 import androidx.camera.video.Recording
 import androidx.camera.video.VideoCapture
 import androidx.camera.video.VideoRecordEvent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -39,9 +44,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -53,9 +63,11 @@ import androidx.navigation.NavController
 import com.example.posecoach.R
 import com.example.posecoach.components.HomeMenu
 import com.example.posecoach.data.viewModel.SelectedExVM
+import com.example.posecoach.ui.theme.colorDark
 import com.example.posecoach.ui.theme.colorDarker
 import com.example.posecoach.ui.theme.colorPrin
 import com.example.posecoach.ui.theme.colorSec
+import com.example.posecoach.ui.theme.colorWhite
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarkerResult
@@ -63,6 +75,7 @@ import com.google.mediapipe.framework.image.MPImage
 import com.google.mediapipe.framework.image.BitmapImageBuilder
 import com.google.mediapipe.tasks.components.containers.NormalizedLandmark
 import com.google.mediapipe.tasks.core.BaseOptions
+import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
 
 @Composable
@@ -71,9 +84,12 @@ fun CameraScreen(navController: NavController, selectedExVM: SelectedExVM) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
 
+    // Camara
     var recording: Recording? by remember { mutableStateOf(null) }
     var isRecording by remember { mutableStateOf(false) }
     var videoCapture by remember { mutableStateOf<VideoCapture<Recorder>?>(null) }
+    var useFrontCamera by remember { mutableStateOf(true) }
+    val previewView = remember { PreviewView(context) }
 
     // Estados para MediaPipe
     var poseLandmarker by remember { mutableStateOf<PoseLandmarker?>(null) }
@@ -83,6 +99,25 @@ fun CameraScreen(navController: NavController, selectedExVM: SelectedExVM) {
 
     // Feedback
     var feedbackMessage by remember { mutableStateOf("") }
+    var isBodyStable by remember { mutableStateOf(false) }
+    var stableFrameCount by remember { mutableStateOf(0) }
+    var showFeedDialog by remember { mutableStateOf(false) }
+    var lastFeedbackTime by remember { mutableStateOf(0L) }
+    var lastFeedbackText by remember { mutableStateOf("") }
+    val FEEDBACK_COOLDOWN = 2000L
+    var errorLandmarks by remember { mutableStateOf<Set<Int>>(emptySet()) }
+    var errorStartTime by remember { mutableStateOf<Long?>(null) }
+    val ERROR_HOLD_TIME = 100L
+
+    LaunchedEffect(showFeedDialog) {
+        if (showFeedDialog) {
+            delay(2000)
+            showFeedDialog = false
+            feedbackMessage = ""
+            errorLandmarks = emptySet()
+        }
+    }
+
 
     // Función para calcular ángulo entre 3 puntos
     fun calculateAngle(a: NormalizedLandmark, b: NormalizedLandmark, c: NormalizedLandmark): Float {
@@ -95,12 +130,25 @@ fun CameraScreen(navController: NavController, selectedExVM: SelectedExVM) {
 
     // Procesar los resultados de la detección de pose y comparar con reglas del ejercicio
     fun processPoseResults(result: PoseLandmarkerResult) {
-        val rules = selectedExVM.exerciseRules.value ?: return
-        val landmarksList = result.landmarks()
-        if(landmarksList.isEmpty()) return
+        // --------- estabilidad del cuerpo ---------
+        val landmarkList = result.landmarks()
+        if(landmarkList.isEmpty()) {
+            stableFrameCount = 0
+            isBodyStable = false
+            return
+        }
 
-        val landmarks = landmarksList[0]
+        stableFrameCount++
+        if(stableFrameCount < 20) return
+        isBodyStable = true
+
+        // --------- evaluar si el cuerpo está estable ---------
+        if(!isBodyStable) return
+
+        val rules = selectedExVM.exerciseRules.value ?: return
+        val landmarks = landmarkList[0]
         var feedbackText = ""
+        val errorPoints = mutableSetOf<Int>()
 
         rules.ideal_angles.forEach { (angleName, rule) ->
             if(rule.landmarks.size < 2) return@forEach
@@ -120,14 +168,44 @@ fun CameraScreen(navController: NavController, selectedExVM: SelectedExVM) {
             }
 
             // Verificación con min/max y errores
-            val mistakes = rules.common_mistakes.filter { it.condicion.contains("<") && measuredAngle < rule.min ||
-                    it.condicion.contains(">") && measuredAngle > rule.max }
+            val mistakes = rules.common_mistakes.filter {
+                (it.condicion.contains("<") && measuredAngle < rule.min) ||
+                (it.condicion.contains(">") && measuredAngle > rule.max)
+            }
             for(m in mistakes) {
                 feedbackText += "${angleName}: ${m.error}\n"
+
+                rule.landmarks.forEach { index ->
+                    errorPoints.add(index)
+                }
             }
         }
 
-        feedbackMessage = feedbackText
+        val currentTime = System.currentTimeMillis()
+        if (feedbackText.isNotBlank()) {
+            // Si es la primera vez que aparece el error, iniciar conteo
+            if (errorStartTime == null)
+                errorStartTime = currentTime
+
+            // Si el error se mantuvo 2 segundos
+            if (currentTime - errorStartTime!! >= ERROR_HOLD_TIME) {
+                // Mostrar feedback SOLO UNA VEZ por error sostenido
+                if (feedbackText != lastFeedbackText) {
+                    feedbackMessage = feedbackText
+                    showFeedDialog = true
+                    lastFeedbackText = feedbackText
+                }
+            }
+        } else {
+            // El error desapareció → resetear
+            errorStartTime = null
+            lastFeedbackText = ""
+            showFeedDialog = false
+        }
+
+        errorLandmarks =
+            if(feedbackText.isNotBlank()) errorPoints
+            else emptySet()
     }
 
     // Inicializar MediaPipe Pose
@@ -236,53 +314,55 @@ fun CameraScreen(navController: NavController, selectedExVM: SelectedExVM) {
         }
     }
 
+    // Renderizar Camera
+    val cameraSelector = if(useFrontCamera)
+        CameraSelector.DEFAULT_FRONT_CAMERA
+    else
+        CameraSelector.DEFAULT_BACK_CAMERA
+
+    LaunchedEffect(useFrontCamera) {
+        stableFrameCount = 0
+        isBodyStable = false
+
+        val cameraProvider = cameraProviderFuture.get()
+        val preview = Preview.Builder().build().also {
+            it.setSurfaceProvider(previewView.surfaceProvider)
+        }
+
+        // Configurar ImageAnalysis para MediaPipe
+        val imageAnalysis = ImageAnalysis.Builder()
+            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+            .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
+            .build()
+            .also {
+                it.setAnalyzer(ContextCompat.getMainExecutor(context)) { frame ->
+                    processFrameForPose(frame)
+                }
+            }
+
+        val recorder = Recorder.Builder()
+            .setQualitySelector(QualitySelector.from(Quality.HD))
+            .build()
+
+        val capture = VideoCapture.withOutput(recorder)
+
+        cameraProvider.unbindAll()
+        cameraProvider.bindToLifecycle(
+            lifecycleOwner,
+            cameraSelector,
+            preview,
+            capture,
+            imageAnalysis
+        )
+
+        videoCapture = capture
+    }
+
 
     Box( modifier = Modifier.fillMaxSize() )
     {
         AndroidView(
-            factory = { ctx ->
-                val previewView = PreviewView(ctx)
-                val preview = Preview.Builder().build()
-                val cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
-
-                // Configurar ImageAnalysis para MediaPipe
-                val imageAnalysis = ImageAnalysis.Builder()
-                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                    .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
-                    .build()
-                    .also {
-                        it.setAnalyzer(ContextCompat.getMainExecutor(ctx)) {
-                            frame -> processFrameForPose(frame)
-                        }
-                    }
-
-                val recorder = Recorder.Builder()
-                    .setQualitySelector(QualitySelector.from(Quality.HD))
-                    .build()
-
-                val capture = VideoCapture.withOutput(recorder)
-
-                cameraProviderFuture.addListener({
-                    val cameraProvider = cameraProviderFuture.get()
-                    preview.setSurfaceProvider(previewView.surfaceProvider)
-
-                    try {
-                        cameraProvider.unbindAll()
-                        cameraProvider.bindToLifecycle(
-                            lifecycleOwner,
-                            cameraSelector,
-                            preview,
-                            capture,
-                            imageAnalysis
-                        )
-                        videoCapture = capture
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }, ContextCompat.getMainExecutor(ctx))
-
-                previewView
-            },
+            factory = { previewView },
             modifier = Modifier.fillMaxSize()
         )
 
@@ -290,28 +370,45 @@ fun CameraScreen(navController: NavController, selectedExVM: SelectedExVM) {
         PoseOverlay(
             poseResult = poseResult,
             frameWidth = frameWidth,
-            frameHeight = frameHeight
+            frameHeight = frameHeight,
+            isFrontCamera = useFrontCamera,
+            errorLandmarks = errorLandmarks
         )
 
+        // Flip Camera
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 80.dp, end = 20.dp),
+            contentAlignment = Alignment.TopEnd
+        ){
+            Box(
+                modifier = Modifier
+                    .size(50.dp)
+                    .background(colorDark, CircleShape),
+                contentAlignment = Alignment.Center
+            ){
+                Image(
+                    painter = painterResource(id = R.drawable.switch_cam),
+                    contentDescription = "Flip Camera",
+                    modifier = Modifier
+                        .size(33.dp)
+                        .clickable { useFrontCamera = !useFrontCamera },
+                    contentScale = ContentScale.Fit,
+                    colorFilter = ColorFilter.tint(colorWhite)
+                )
+            }
+        }
+
         // Mostrar feedback de errores
-        var showDialog by remember { mutableStateOf(false) }
-        if(feedbackMessage.isNotEmpty()) {
+        if(showFeedDialog) {
             AlertDialog(
-                onDismissRequest = { },
-                confirmButton = {
-                    Button(
-                        onClick = { showDialog = false },
-                        colors = ButtonDefaults.buttonColors( containerColor = colorPrin ),
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                    ){
-                        Text("OK")
-                    }
-                },
+                onDismissRequest = {},
+                confirmButton = {},
+                dismissButton = {},
                 title = {
                     Text(
-                        "Feedback",
+                        "Corrección",
                         color = colorSec,
                         fontSize = 20.sp,
                         fontFamily = FontFamily(Font(R.font.figtree)),
@@ -324,7 +421,7 @@ fun CameraScreen(navController: NavController, selectedExVM: SelectedExVM) {
                         color = Color.Black,
                         fontSize = 18.sp,
                         fontFamily = FontFamily(Font(R.font.figtree)),
-                        modifier = Modifier.padding(vertical = 8.dp)
+                        modifier = Modifier.padding(top = 8.dp)
                     )
                 }
             )
@@ -351,75 +448,14 @@ fun ImageProxy.toMPImage(): MPImage {
     return BitmapImageBuilder(bitmap).build()
 }
 
-/* Overlay con landmarks
 @Composable
-fun PoseOverlay(poseResult: PoseLandmarkerResult?, frameWidth: Int, frameHeight: Int) {
-    if(poseResult == null) return
-
-    Canvas( modifier = Modifier.fillMaxSize() ){
-        val landmarksList = poseResult.landmarks()
-        if(landmarksList.isEmpty()) return@Canvas
-
-        val landmarks = landmarksList[0]
-        val width = size.width
-        val height = size.height
-
-        // Escalado a la pantalla
-        fun lx(norm: Float): Float {
-            val scale = maxOf(width / frameWidth, height / frameHeight)
-            val offsetX = (width - frameWidth * scale) / 2f
-            return width - (offsetX + norm * frameWidth * scale)
-        }
-
-        fun ly(norm: Float): Float {
-            val scale = maxOf(width / frameWidth, height / frameHeight)
-            val offsetY = (height - frameHeight * scale) / 2f
-            return offsetY + norm * frameHeight * scale
-        }
-
-        // Dibujo de puntos
-        for(lm in landmarks) {
-            drawCircle(
-                color = colorSec,
-                radius = 6f,
-                center = Offset(
-                    x = lx(lm.x()),
-                    y = ly(lm.y())
-                )
-            )
-        }
-
-        // Conexiones del esqueleto (LANDMARKS_doc)
-        val connections = listOf(
-            11 to 12,                       // hombros
-            11 to 13, 13 to 15,             // brazo izquierdo
-            12 to 14, 14 to 16,             // brazo derecho
-            11 to 23, 12 to 24,             // torso
-            23 to 24,                       // cadera
-            23 to 25, 25 to 27, 27 to 31,   // pierna izquierda
-            24 to 26, 26 to 28, 28 to 32    // pierna derecha
-        )
-
-        for((start, end) in connections) {
-            if(start < landmarks.size && end < landmarks.size) {
-                val a = landmarks[start]
-                val b = landmarks[end]
-
-                drawLine(
-                    color = colorDarker,
-                    start = androidx.compose.ui.geometry.Offset(lx(a.x()), ly(a.y())),
-                    end = androidx.compose.ui.geometry.Offset(lx(b.x()), ly(b.y())),
-                    strokeWidth = 4f
-                )
-            }
-        }
-    }
-}
-
- */
-
-@Composable
-fun PoseOverlay(poseResult: PoseLandmarkerResult?, frameWidth: Int, frameHeight: Int) {
+fun PoseOverlay(
+    poseResult: PoseLandmarkerResult?,
+    frameWidth: Int,
+    frameHeight: Int,
+    isFrontCamera: Boolean,
+    errorLandmarks: Set<Int>
+){
     if(poseResult == null) return
 
     androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxSize()) {
@@ -429,11 +465,23 @@ fun PoseOverlay(poseResult: PoseLandmarkerResult?, frameWidth: Int, frameHeight:
         val widthScale = size.width
         val heightScale = size.height
 
-        fun lx(norm: Float) = widthScale - ((widthScale - frameWidth * (widthScale / frameWidth)) / 2f + norm * frameWidth * (widthScale / frameWidth))
+        fun lx(norm: Float): Float {
+            val scale = widthScale / frameWidth
+            val offsetX = (widthScale - frameWidth * scale) / 2f
+            val x = offsetX + norm * frameWidth * scale
+
+            return if (isFrontCamera) widthScale - x else x
+        }
         fun ly(norm: Float) = (heightScale - frameHeight * (heightScale / frameHeight)) / 2f + norm * frameHeight * (heightScale / frameHeight)
 
         // Dibujo de puntos
-        for(lm in landmarks) drawCircle(color = colorSec, radius = 6f, center = androidx.compose.ui.geometry.Offset(lx(lm.x()), ly(lm.y())))
+        landmarks.forEachIndexed { index, lm ->
+            drawCircle(
+                color = if (errorLandmarks.contains(index)) Color.Red else colorSec,
+                radius = if (errorLandmarks.contains(index)) 9f else 6f,
+                center = Offset(lx(lm.x()), ly(lm.y()))
+            )
+        }
 
         // Conexiones
         val connections = listOf(

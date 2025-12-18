@@ -46,12 +46,18 @@ import com.example.posecoach.components.ContinueButton
 import com.example.posecoach.components.OptionSelectorDer
 import com.example.posecoach.components.ScreenLoader
 import com.example.posecoach.data.viewModel.RegistroViewModel
+import com.example.posecoach.data.viewModel.RoutineViewModel
 import com.example.posecoach.data.viewModel.UserViewModel
 import com.example.posecoach.ui.theme.colorSec
 import com.example.posecoach.ui.theme.colorWhite
 
 @Composable
-fun EquipmentScreen(navController: NavController, registroViewModel: RegistroViewModel, userViewModel: UserViewModel) {
+fun EquipmentScreen(
+    navController: NavController,
+    registroViewModel: RegistroViewModel,
+    userViewModel: UserViewModel,
+    routineViewModel: RoutineViewModel
+){
     // BACKEND
     val loading = userViewModel.loading.value
     val viewModelMensaje = userViewModel.mensaje.value
@@ -307,6 +313,7 @@ fun EquipmentScreen(navController: NavController, registroViewModel: RegistroVie
                     else {
                         val usuario = registroViewModel.usuario.value
                         userViewModel.completeProfile(usuario)
+                        routineViewModel.checkRoutine()
                     }
                 },
                 modifier = Modifier

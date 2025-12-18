@@ -110,7 +110,7 @@ fun MyApp(){
         composable ("height") { HeightScreen(navController, registroViewModel) }
         composable ("goal") { GoalScreen(navController, registroViewModel) }
         composable ("experience") { ExperienceScreen(navController, registroViewModel) }
-        composable ("equipment") { EquipmentScreen(navController, registroViewModel, userViewModel) }
+        composable ("equipment") { EquipmentScreen(navController, registroViewModel, userViewModel, routineViewModel) }
 
         // HOME
         composable ("home") { HomeScreen(navController, profileViewModel, routineViewModel) }
